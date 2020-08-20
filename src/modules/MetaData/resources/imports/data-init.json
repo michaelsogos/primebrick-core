@@ -1,0 +1,15 @@
+{
+    "$schema": "../../../../schemas/data-init.schema.json",
+    "version": "1.0.0",
+    "defs": [
+        {
+            "name": "translations-importer",
+            "files": ["translations-it.csv", "translations-en.csv"],
+            "type": "csv",
+            "csvOptions": {
+                "entity": "MetaTranslation",
+                "checkColumns": ["key", "languageCode"]
+            }
+        }
+    ]
+}
