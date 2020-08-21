@@ -7,3 +7,4 @@ login;en;Login;false;
 login-hint;en;Enter credentials to access;false;
 username;en;Username;false;
 password;en;Password;false;
+login-failed;en;Invalid credentials;false;
