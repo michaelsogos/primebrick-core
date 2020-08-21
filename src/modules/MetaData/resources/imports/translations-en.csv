@@ -3,3 +3,7 @@ yes;en;Yes;false;
 no;en;No;false;
 ok;en;Ok;false;
 cancel;en;Cancel;false;
+login;en;Login;false;
+login-hint;en;Enter credentials to access;false;
+username;en;Username;false;
+password;en;Password;false;
