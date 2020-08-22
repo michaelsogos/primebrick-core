@@ -1,0 +1,33 @@
+{
+    "$schema": "../../../../schemas/data-init.schema.json",
+    "version": "1.0.0",
+    "defs": [
+        {
+            "name": "users-importer",
+            "files": ["users.csv"],
+            "type": "csv",
+            "csvOptions": {
+                "entity": "User",
+                "checkColumns": ["code"]
+            }
+        },
+        {
+            "name": "roles-importer",
+            "files": ["roles.csv"],
+            "type": "csv",
+            "csvOptions": {
+                "entity": "Role",
+                "checkColumns": ["name"],
+                "manyToManyMapping": [
+                    {
+                        "targetEntity": "User",
+                        "targetKeyColumn": "$user",
+                        "targetKeyField": "code",
+                        "sourceKeyColumn": "name",
+                        "sourceRelationField": "users"
+                    }
+                ]
+            }
+        }
+    ]
+}

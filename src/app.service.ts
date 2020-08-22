@@ -120,6 +120,47 @@ export class AppService {
                         }
                     }
 
+                    //Import many-to-many relations
+                    if (definition.csvOptions.manyToManyMapping && definition.csvOptions.manyToManyMapping.length > 0) {
+                        for (const manyToManyMapping of definition.csvOptions.manyToManyMapping) {
+                            const targetEntityRepository = dbconn.getRepository(manyToManyMapping.targetEntity);
+                            // const recordsToLink = csv.data.filter(record => record[manyToManyMapping.targetKeyColumn]);
+
+                            const recordsToLink = new Map(
+                                csv.data.map(record => [
+                                    `${record[manyToManyMapping.targetKeyColumn]}_${record[manyToManyMapping.sourceKeyColumn]}`,
+                                    {
+                                        targetValue: record[manyToManyMapping.targetKeyColumn],
+                                        sourceValue: record[manyToManyMapping.sourceKeyColumn],
+                                    },
+                                ]),
+                            ).values();
+
+                            for (const record of recordsToLink) {
+                                const findConditions = {};
+                                findConditions[manyToManyMapping.targetKeyField] = record.targetValue;
+
+                                const targetEntities = await targetEntityRepository.find({
+                                    where: findConditions,
+                                });
+
+                                const sourceKeyField = definition.csvOptions.columnsMapping
+                                    ? definition.csvOptions.columnsMapping.find(mapping => mapping.column == manyToManyMapping.sourceKeyColumn).field
+                                    : manyToManyMapping.sourceKeyColumn;
+
+                                for (let x = 0; x < entities.length; x++) {
+                                    if (entities[x][sourceKeyField] == record.sourceValue) {
+                                        const entity = entities[x];
+                                        if (!Object.prototype.hasOwnProperty.call(entity, manyToManyMapping.sourceRelationField))
+                                            entity[manyToManyMapping.sourceRelationField] = [];
+                                        entity[manyToManyMapping.sourceRelationField].push(...targetEntities);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //TODO: @michaelsogos -> find a way to save only entities that has been really changed; actually every imported entity will be updated even if already exists
                     persistedEntities += (await repository.save(entities, { chunk: definition.chunkSize || 1000 })).length;
 
                     importLogs.push({

@@ -32,6 +32,7 @@ class DataInitCsvOptions {
     checkColumns: string[];
     quoteChar: string;
     relationsMapping: DataInitRelationMapping[];
+    manyToManyMapping: DataInitManyToManyMapping[];
 }
 
 class DataInitColumnMapping {
@@ -44,6 +45,14 @@ class DataInitRelationMapping {
     mappedByColumn: string;
     childKeyColumn: string;
     parentField: string;
+}
+
+class DataInitManyToManyMapping {
+    targetEntity: string;
+    targetKeyColumn: string;
+    sourceKeyColumn: string;
+    targetKeyField: string;
+    sourceRelationField: string;
 }
 
 enum DataInitDefinitionFileType {

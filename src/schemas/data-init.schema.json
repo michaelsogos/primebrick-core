@@ -109,6 +109,38 @@
                                     "additionalProperties": false
                                 }
                             },
+                            "manyToManyMapping": {
+                                "description": "The many-to-many mapping array",
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "targetEntity": {
+                                            "description": "The name of the entity to be linked",
+                                            "type": "string"
+                                        },
+                                        "targetKeyColumn": {
+                                            "description": "The CSV column name containing value used to retrieve target entities to link",
+                                            "type": "string"
+                                        },
+                                        "targetKeyField": {
+                                            "description": "The target entity field name containing value used to retrieve target entities to link",
+                                            "type": "string"
+                                        },
+                                        "sourceKeyColumn": {
+                                            "description": "The CSV column name containing value used to retrieve source entities to link",
+                                            "type": "string"
+                                        },
+                                        "sourceRelationField": {
+                                            "description": "The source entity field name used to link target entities",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["targetEntity", "targetKeyColumn", "targetKeyField", "sourceKeyColumn", "sourceRelationField"],
+                                    "additionalProperties": false
+                                }
+                            },
                             "checkColumns": {
                                 "description": "List of columns used to check wherever entity already exist",
                                 "type": "array",
