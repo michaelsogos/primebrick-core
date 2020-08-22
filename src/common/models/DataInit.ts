@@ -27,15 +27,23 @@ class DataInitDefinition {
 class DataInitCsvOptions {
     entity: string;
     delimiter?: DataInitCsvSeparatorType;
-    mapping: DataInitMapping[];
+    columnsMapping: DataInitColumnMapping[];
     header: boolean;
     checkColumns: string[];
     quoteChar: string;
+    relationsMapping: DataInitRelationMapping[];
 }
 
-class DataInitMapping {
+class DataInitColumnMapping {
     column: string;
     field: string;
+}
+
+class DataInitRelationMapping {
+    parentColumn: string;
+    mappedByColumn: string;
+    childKeyColumn: string;
+    parentField: string;
 }
 
 enum DataInitDefinitionFileType {

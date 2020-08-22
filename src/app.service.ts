@@ -40,12 +40,13 @@ export class AppService {
                         const record: any = csv.data[x];
                         let entity = repository.create();
 
+                        //Make where conditions to find exsiting entity
                         if (definition.csvOptions.checkColumns && definition.csvOptions.checkColumns.length > 0) {
                             const findConditions = {};
                             for (const checkColumn of definition.csvOptions.checkColumns) {
-                                const mapping = !definition.csvOptions.mapping
+                                const mapping = !definition.csvOptions.columnsMapping
                                     ? null
-                                    : definition.csvOptions.mapping.find(item => item.column == checkColumn);
+                                    : definition.csvOptions.columnsMapping.find(item => item.column == checkColumn);
 
                                 if (!mapping && Object.prototype.hasOwnProperty.call(record, checkColumn))
                                     findConditions[checkColumn] = record[checkColumn];
@@ -64,8 +65,9 @@ export class AppService {
                             if (sourceEntity) entity = sourceEntity;
                         }
 
-                        if (definition.csvOptions.mapping && definition.csvOptions.mapping.length > 0)
-                            for (const mapping of definition.csvOptions.mapping) {
+                        //Set entity fields upon mapping or by csv column name
+                        if (definition.csvOptions.columnsMapping && definition.csvOptions.columnsMapping.length > 0)
+                            for (const mapping of definition.csvOptions.columnsMapping) {
                                 if (!Object.prototype.hasOwnProperty.call(record, mapping.column))
                                     throw new Error(`Cannot find column [${mapping.column}] at line ${x + 1}!`);
 
@@ -73,14 +75,52 @@ export class AppService {
                             }
                         else {
                             for (const field in record) {
-                                entity[field] = record[field];
+                                if (!field.startsWith('$') && Object.prototype.hasOwnProperty.call(record, field)) entity[field] = record[field];
                             }
                         }
 
+                        if (repository.metadata.columns.some(column => column.propertyName == 'importedBy')) entity['importedBy'] = -1; //TODO: @mso -> Collect from context the LOGGED IN USER ID
+                        if (repository.metadata.columns.some(column => column.propertyName == 'importedOn')) entity['importedOn'] = new Date();
                         entities.push(entity);
                     }
 
-                    const persistedEntities = (await repository.save(entities, { chunk: definition.chunkSize || 1000 })).length;
+                    let persistedEntities = 0;
+
+                    //Link entities with related entity
+                    if (definition.csvOptions.relationsMapping && definition.csvOptions.relationsMapping.length > 0) {
+                        for (const relationMapping of definition.csvOptions.relationsMapping) {
+                            const savedParents = [];
+                            const recordsToLink = csv.data.filter(record => record[relationMapping.parentColumn]);
+
+                            for (const record of recordsToLink) {
+                                let parentEntity = savedParents.find(
+                                    parent => parent[relationMapping.mappedByColumn] == record[relationMapping.parentColumn],
+                                );
+
+                                if (!parentEntity) {
+                                    const parentEntityIndex = entities.findIndex(
+                                        entity => entity[relationMapping.mappedByColumn] == record[relationMapping.parentColumn],
+                                    );
+                                    parentEntity = entities[parentEntityIndex];
+                                    parentEntity = await repository.save(parentEntity);
+                                    persistedEntities++;
+                                    savedParents.push(parentEntity);
+                                    entities.splice(parentEntityIndex, 1);
+                                }
+
+                                const childKeyField = definition.csvOptions.columnsMapping
+                                    ? definition.csvOptions.columnsMapping.find(mapping => mapping.column == relationMapping.childKeyColumn).field
+                                    : relationMapping.childKeyColumn;
+
+                                const childEntityIndex = entities.findIndex(
+                                    entity => entity[childKeyField] == record[relationMapping.childKeyColumn],
+                                );
+                                if (childEntityIndex >= 0) entities[childEntityIndex][relationMapping.parentField] = parentEntity;
+                            }
+                        }
+                    }
+
+                    persistedEntities += (await repository.save(entities, { chunk: definition.chunkSize || 1000 })).length;
 
                     importLogs.push({
                         status: 'success',

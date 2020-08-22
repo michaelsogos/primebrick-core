@@ -10,6 +10,23 @@
                 "entity": "MetaTranslation",
                 "checkColumns": ["key", "languageCode"]
             }
+        },
+        {
+            "name": "menu-importer",
+            "files": ["menu-item.csv"],
+            "type": "csv",
+            "csvOptions": {
+                "entity": "MetaMenuItem",
+                "checkColumns": ["importId"],
+                "relationsMapping": [
+                    {
+                        "parentColumn": "$parent",
+                        "mappedByColumn": "importId",
+                        "childKeyColumn": "importId",
+                        "parentField": "parent"
+                    }
+                ]
+            }
         }
     ]
 }

@@ -61,8 +61,8 @@
                                 "type": "boolean",
                                 "default": true
                             },
-                            "mapping": {
-                                "description": "The mapping array",
+                            "columnsMapping": {
+                                "description": "The columns mapping array",
                                 "type": "array",
                                 "minItems": 1,
                                 "items": {
@@ -78,6 +78,34 @@
                                         }
                                     },
                                     "required": ["column", "field"],
+                                    "additionalProperties": false
+                                }
+                            },
+                            "relationsMapping": {
+                                "description": "The relations mapping array",
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "parentColumn": {
+                                            "description": "The CSV column name containing parent relation",
+                                            "type": "string"
+                                        },
+                                        "mappedByColumn": {
+                                            "description": "The CSV column name containing value to retrieve the parent to link",
+                                            "type": "string"
+                                        },
+                                        "childKeyColumn": {
+                                            "description": "The CSV column name containing value to retrieve the child to link",
+                                            "type": "string"
+                                        },
+                                        "parentField": {
+                                            "description": "The child entity field name containing the relation with parent",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["parentColumn", "mappedByColumn", "childKeyColumn", "parentField"],
                                     "additionalProperties": false
                                 }
                             },
