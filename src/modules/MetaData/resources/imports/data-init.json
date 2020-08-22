@@ -25,6 +25,15 @@
                         "childKeyColumn": "importId",
                         "parentField": "parent"
                     }
+                ],
+                "manyToManyMapping": [
+                    {
+                        "targetEntity": "Role",
+                        "targetKeyColumn": "$role",
+                        "targetKeyField": "name",
+                        "sourceKeyColumn": "importId",
+                        "sourceRelationField": "roles"
+                    }
                 ]
             }
         }

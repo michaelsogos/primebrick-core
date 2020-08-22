@@ -1,4 +1,4 @@
-importId;labelKey;icon;color;viewName;$parent;orderPriority
-1;menu-admin;mdi-tune;tertiary;;;1
-2;menu-admin-translations;mdi-translate;;view-translations;1;1
-3;menu-admin-navigation;mdi-format-list-bulleted-square;;view-menus;1;2
+importId;labelKey;icon;color;viewName;$parent;orderPriority;$role
+1;menu-admin;mdi-tune;tertiary;;;1;ADMIN
+2;menu-admin-translations;mdi-translate;;view-translations;1;1;
+3;menu-admin-navigation;mdi-format-list-bulleted-square;;view-menus;1;2;
