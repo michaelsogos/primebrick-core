@@ -68,28 +68,15 @@ export class AuthService {
                         issuer: 'primebrick',
                         audience: `tenant:${tenant.code}`,
                         ignoreExpiration: true,
-                    });
+                    }) as UserProfile;
 
-                    //TODO: @mso -> A refresh token should always retrieve newer user profile, because a change to profile can happend in the mean time
-                    //Theoretically a new user profile changes should force logout and login, but is not user firendly for UX
-                    //At the same time a user profile changes should reflect immediately and not after an amount of time (token expire)
-                    //So a logic to refresh token forcely immediately after user profile changes seems be a best practice
-                    //The below code just copy user profile from expired access token, not the right way!
-                    const access_token = jwt.sign(
-                        {
-                            code: decodedAccessToken['code'],
-                            email: decodedAccessToken['email'],
-                            first_name: decodedAccessToken['first_name'],
-                            last_name: decodedAccessToken['last_name'],
-                            roles: decodedAccessToken['roles'],
-                        },
-                        authConfig.secretKey,
-                        {
-                            audience: [`tenant:${tenant.code}`],
-                            issuer: 'primebrick',
-                            expiresIn: authConfig.tokenExpiresIn || '15m',
-                        },
-                    );
+                    const userProfile = this.createUserProfileFromUser(await this.getUserProfile(tenantAlias, decodedAccessToken.code));
+
+                    const access_token = jwt.sign(Object.assign({}, userProfile), authConfig.secretKey, {
+                        audience: [`tenant:${tenant.code}`],
+                        issuer: 'primebrick',
+                        expiresIn: authConfig.tokenExpiresIn || '15m',
+                    });
 
                     const refresh_token = jwt.sign(
                         { exp: decodedRefreshToken['exp'], aud: decodedRefreshToken['aud'], iss: decodedRefreshToken['iss'] },
@@ -125,6 +112,17 @@ export class AuthService {
             relations: ['user'],
         });
         return validLogin.user;
+    }
+
+    private async getUserProfile(tenantAlias: string, userCode: string): Promise<User> {
+        const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, User);
+        const user = await loginRepository.findOneOrFail({
+            where: {
+                code: userCode,
+            },
+        });
+
+        return user;
     }
 
     private createUserProfileFromUser(user: User): UserProfile {

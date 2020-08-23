@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { MetaView } from './entities/metaView.entity';
 import { TenantRepositoryService, ContextPayload } from 'primebrick-sdk';
 import { MetaMenuItem } from './entities/MetaMenuItem.entity';
@@ -19,26 +19,19 @@ export class MetadataService {
     }
 
     async getView(context: ContextPayload, viewName: string): Promise<MetaView> {
-        const metaViewRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaView);
-        return await metaViewRepository.findOneOrFail({
-            where: {
-                name: viewName,
-            },
-            select: ['name', 'definition'],
-        });
+        try {
+            const metaViewRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaView);
+            return await metaViewRepository.findOneOrFail({
+                where: {
+                    name: viewName,
+                },
+                select: ['name', 'definition'],
+            });
+        } catch (ex) {
+            //TODO: @michaelsogos -> send error to logging system
+            throw new InternalServerErrorException(new Error(`View [${viewName}] not found!`));
+        }
     }
-
-    // async saveNewMetaView(tenantAlias: string): Promise<void> {
-    //     const metaViewRepository = await this.repositoryService.getTenantRepository(tenantAlias, MetaView);
-    //     const newMetaView: MetaView = metaViewRepository.create();
-    //     newMetaView.name = 'dfdfd';
-    //     newMetaView.definition = { a: 1 };
-    //     await metaViewRepository.save(newMetaView);
-
-    //     const firstMetaView = await metaViewRepository.findOne(1);
-    //     firstMetaView.name = 'a1232244CCCBLA';
-    //     await metaViewRepository.save(firstMetaView);
-    // }
 
     async getAllMenuItems(context: ContextPayload): Promise<MetaMenuItem[]> {
         const metaMenuRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaMenuItem);
