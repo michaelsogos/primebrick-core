@@ -8,10 +8,7 @@ import { MetaTranslation } from './entities/MetaTranslation.entity';
 
 @Injectable()
 export class MetadataService {
-    constructor(private readonly repositoryService: TenantRepositoryService) {
-        // Reflect.defineMetadata('path', 'api/meta', this);
-        // Reflect.defineMetadata('__routeArguments__', { pipe: 'f' }, this, 'asd');
-    }
+    constructor(private readonly repositoryService: TenantRepositoryService) {}
 
     async getAllViews(tenantAlias: string): Promise<MetaView[]> {
         const metaViewRepository = await this.repositoryService.getTenantRepository(tenantAlias, MetaView);
@@ -21,12 +18,13 @@ export class MetadataService {
     async getView(context: ContextPayload, viewName: string): Promise<MetaView> {
         try {
             const metaViewRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaView);
-            return await metaViewRepository.findOneOrFail({
+            const view = await metaViewRepository.findOneOrFail({
                 where: {
                     name: viewName,
                 },
-                select: ['name', 'definition'],
+                select: ['definition'],
             });
+            return view.definition;
         } catch (ex) {
             //TODO: @michaelsogos -> send error to logging system
             throw new InternalServerErrorException(new Error(`View [${viewName}] not found!`));

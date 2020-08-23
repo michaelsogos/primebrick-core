@@ -10,5 +10,5 @@ export class MetaView extends AudibleEntity {
     name: string;
 
     @Column('json')
-    definition: any;
+    definition: any; //TODO: @michaelsogos -> Evaluate if a extendable base model for definition can be applied here
 }

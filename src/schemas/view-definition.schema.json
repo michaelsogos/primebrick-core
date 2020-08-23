@@ -29,6 +29,27 @@
             "description": "View main color",
             "type": "string"
         },
+        "alternativeViews": {
+            "description": "List of alternative views",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "View name",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "View type",
+                        "type": "string",
+                        "enum": ["grid", "form", "cards"]
+                    }
+                },
+                "required": ["name", "type"],
+                "additionalProperties": false
+            }
+        },
         "definition": {
             "description": "View definition",
             "type": "object",
@@ -40,7 +61,7 @@
                 "type": {
                     "description": "View type",
                     "type": "string",
-                    "enum": ["grid", "form", "card"]
+                    "enum": ["grid", "form", "cards"]
                 },
                 "fields": {
                     "description": "List of fields to show",
@@ -60,7 +81,7 @@
                             "perms": {
                                 "description": "List of permission needed to access to this field",
                                 "type": "array",
-                                "minItems": 0,
+                                "minItems": 1,
                                 "items": {
                                     "type": "string"
                                 }
@@ -73,7 +94,7 @@
                 "perms": {
                     "description": "List of permission needed to access to this view",
                     "type": "array",
-                    "minItems": 0,
+                    "minItems": 1,
                     "items": {
                         "type": "string"
                     }

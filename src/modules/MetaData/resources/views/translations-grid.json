@@ -27,5 +27,11 @@
                 "labelKey": "template"
             }
         ]
-    }
+    },
+    "alternativeViews": [
+        {
+            "name": "translations-cards",
+            "type": "cards"
+        }
+    ]
 }
