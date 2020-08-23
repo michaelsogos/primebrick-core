@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Migration } from 'typeorm';
+import { Migration, getManager } from 'typeorm';
 import { TenantRepositoryService } from 'primebrick-sdk';
 import * as path from 'path';
 import * as fs from 'fs';
-import { DataInit } from './common/models/DataInit';
+import { DataInit, DataInitCardinalityType } from './common/models/DataInit';
 import * as papa from 'papaparse';
 
 @Injectable()
@@ -84,42 +84,70 @@ export class AppService {
                         entities.push(entity);
                     }
 
-                    //Import many-to-many relations
-                    if (definition.csvOptions.manyToManyMapping && definition.csvOptions.manyToManyMapping.length > 0) {
-                        for (const manyToManyMapping of definition.csvOptions.manyToManyMapping) {
-                            const targetEntityRepository = dbconn.getRepository(manyToManyMapping.targetEntity);
-                            // const recordsToLink = csv.data.filter(record => record[manyToManyMapping.targetKeyColumn]);
+                    //Import cardinal relations
+                    if (definition.csvOptions.cardinalRelations && definition.csvOptions.cardinalRelations.length > 0) {
+                        for (const cardinalRelation of definition.csvOptions.cardinalRelations) {
+                            const targetEntityRepository = dbconn.getRepository(cardinalRelation.targetEntity);
 
                             const recordsToLink = new Map(
                                 csv.data
-                                    .filter(record => record[manyToManyMapping.targetKeyColumn])
+                                    .filter(record => record[cardinalRelation.targetKeyColumn])
                                     .map(record => [
-                                        `${record[manyToManyMapping.targetKeyColumn]}_${record[manyToManyMapping.sourceKeyColumn]}`,
+                                        `${record[cardinalRelation.targetKeyColumn]}_${record[cardinalRelation.sourceKeyColumn]}`,
                                         {
-                                            targetValue: record[manyToManyMapping.targetKeyColumn],
-                                            sourceValue: record[manyToManyMapping.sourceKeyColumn],
+                                            targetValue: record[cardinalRelation.targetKeyColumn],
+                                            sourceValue: record[cardinalRelation.sourceKeyColumn],
                                         },
                                     ]),
                             ).values();
 
                             for (const record of recordsToLink) {
                                 const findConditions = {};
-                                findConditions[manyToManyMapping.targetKeyField] = record.targetValue;
+                                findConditions[cardinalRelation.targetKeyField] = record.targetValue;
 
-                                const targetEntities = await targetEntityRepository.find({
-                                    where: findConditions,
-                                });
+                                let target: any = null;
+                                if (
+                                    cardinalRelation.cardinality == DataInitCardinalityType.oneToMany ||
+                                    cardinalRelation.cardinality == DataInitCardinalityType.manyToMany
+                                )
+                                    target = await targetEntityRepository.find({
+                                        where: findConditions,
+                                    });
+                                else if (
+                                    cardinalRelation.cardinality == DataInitCardinalityType.oneToOne ||
+                                    cardinalRelation.cardinality == DataInitCardinalityType.manyToOne
+                                )
+                                    target = await targetEntityRepository.findOneOrFail({
+                                        where: findConditions,
+                                    });
 
                                 const sourceKeyField = definition.csvOptions.columnsMapping
-                                    ? definition.csvOptions.columnsMapping.find(mapping => mapping.column == manyToManyMapping.sourceKeyColumn).field
-                                    : manyToManyMapping.sourceKeyColumn;
+                                    ? definition.csvOptions.columnsMapping.find(mapping => mapping.column == cardinalRelation.sourceKeyColumn).field
+                                    : cardinalRelation.sourceKeyColumn;
 
                                 for (let x = 0; x < entities.length; x++) {
                                     if (entities[x][sourceKeyField] == record.sourceValue) {
                                         const entity = entities[x];
-                                        if (!Object.prototype.hasOwnProperty.call(entity, manyToManyMapping.sourceRelationField))
-                                            entity[manyToManyMapping.sourceRelationField] = [];
-                                        entity[manyToManyMapping.sourceRelationField].push(...targetEntities);
+
+                                        if (
+                                            cardinalRelation.cardinality == DataInitCardinalityType.oneToMany ||
+                                            cardinalRelation.cardinality == DataInitCardinalityType.manyToMany
+                                        ) {
+                                            if (!Object.prototype.hasOwnProperty.call(entity, cardinalRelation.sourceRelationField))
+                                                entity[cardinalRelation.sourceRelationField] = [];
+                                            entity[cardinalRelation.sourceRelationField].push(...target);
+                                        } else if (
+                                            cardinalRelation.cardinality == DataInitCardinalityType.oneToOne ||
+                                            cardinalRelation.cardinality == DataInitCardinalityType.manyToOne
+                                        ) {
+                                            entity[cardinalRelation.sourceRelationField] = target;
+                                        }
+
+                                        if (
+                                            cardinalRelation.cardinality == DataInitCardinalityType.oneToOne ||
+                                            cardinalRelation.cardinality == DataInitCardinalityType.oneToMany
+                                        )
+                                            break;
                                     }
                                 }
                             }
@@ -129,41 +157,53 @@ export class AppService {
                     let savedEntitiesCount = 0;
                     const savedParents = [];
 
-                    //Link entities with related entity
-                    if (definition.csvOptions.relationsMapping && definition.csvOptions.relationsMapping.length > 0) {
-                        for (const relationMapping of definition.csvOptions.relationsMapping) {
-                            const recordsToLink = csv.data.filter(record => record[relationMapping.parentColumn]);
+                    //Import circular relation
+                    if (definition.csvOptions.circularRelation) {
+                        const circularRelation = definition.csvOptions.circularRelation;
+                        const recordsToLink = csv.data.filter(record => record[circularRelation.parentColumn]);
 
-                            for (const record of recordsToLink) {
-                                let parentEntity = savedParents.find(
-                                    parent => parent[relationMapping.mappedByColumn] == record[relationMapping.parentColumn],
+                        for (const record of recordsToLink) {
+                            let parentEntity = savedParents.find(
+                                parent => parent[circularRelation.mappedByColumn] == record[circularRelation.parentColumn],
+                            );
+
+                            if (!parentEntity) {
+                                const parentEntityIndex = entities.findIndex(
+                                    entity => entity[circularRelation.mappedByColumn] == record[circularRelation.parentColumn],
                                 );
-
-                                if (!parentEntity) {
-                                    const parentEntityIndex = entities.findIndex(
-                                        entity => entity[relationMapping.mappedByColumn] == record[relationMapping.parentColumn],
-                                    );
-                                    parentEntity = entities[parentEntityIndex];
-                                    parentEntity = await repository.save(parentEntity);
-                                    savedEntitiesCount++;
-                                    savedParents.push(parentEntity);
-                                    entities.splice(parentEntityIndex, 1);
-                                }
-
-                                const childKeyField = definition.csvOptions.columnsMapping
-                                    ? definition.csvOptions.columnsMapping.find(mapping => mapping.column == relationMapping.childKeyColumn).field
-                                    : relationMapping.childKeyColumn;
-
-                                const childEntityIndex = entities.findIndex(
-                                    entity => entity[childKeyField] == record[relationMapping.childKeyColumn],
-                                );
-                                if (childEntityIndex >= 0) entities[childEntityIndex][relationMapping.parentField] = parentEntity;
+                                parentEntity = entities[parentEntityIndex];
+                                parentEntity = await repository.save(parentEntity);
+                                savedEntitiesCount++;
+                                savedParents.push(parentEntity);
+                                entities.splice(parentEntityIndex, 1);
                             }
+
+                            const childKeyField = definition.csvOptions.columnsMapping
+                                ? definition.csvOptions.columnsMapping.find(mapping => mapping.column == circularRelation.childKeyColumn).field
+                                : circularRelation.childKeyColumn;
+
+                            const childEntityIndex = entities.findIndex(entity => entity[childKeyField] == record[circularRelation.childKeyColumn]);
+                            if (childEntityIndex >= 0) entities[childEntityIndex][circularRelation.parentField] = parentEntity;
                         }
                     }
 
                     //TODO: @michaelsogos -> find a way to save only entities that has been really changed; actually every imported entity will be updated even if already exists
-                    savedEntitiesCount += (await repository.save(entities, { chunk: definition.chunkSize || 1000 })).length;
+                    const savedEntities = await repository.save(entities, { chunk: definition.chunkSize || 1000 });
+                    savedEntitiesCount += savedEntities.length;
+
+                    if (definition.csvOptions.circularRelation && repository.metadata.treeType && repository.metadata.treeType == 'closure-table')
+                        for (const entity of savedEntities) {
+                            const metadata = repository.metadata.closureJunctionTable;
+                            const ancestorColumnName = metadata.ancestorColumns[0].databaseName;
+                            const descendantColumnName = metadata.descendantColumns[0].databaseName;
+                            const sql = `
+                            INSERT INTO "${metadata.name}" ("${ancestorColumnName}", "${descendantColumnName}")
+                            VALUES ($1, $2)
+                            ON CONFLICT ("${ancestorColumnName}", "${descendantColumnName}") DO 
+                            UPDATE SET "${ancestorColumnName}" = $1;`;
+
+                            await repository.query(sql, [entity[definition.csvOptions.circularRelation.parentField].id, entity.id]);
+                        }
 
                     importLogs.push({
                         status: 'success',

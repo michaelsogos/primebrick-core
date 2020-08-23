@@ -81,41 +81,42 @@
                                     "additionalProperties": false
                                 }
                             },
-                            "relationsMapping": {
+                            "circularRelation": {
                                 "description": "The relations mapping array",
-                                "type": "array",
-                                "minItems": 1,
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "parentColumn": {
-                                            "description": "The CSV column name containing parent relation",
-                                            "type": "string"
-                                        },
-                                        "mappedByColumn": {
-                                            "description": "The CSV column name containing value to retrieve the parent to link",
-                                            "type": "string"
-                                        },
-                                        "childKeyColumn": {
-                                            "description": "The CSV column name containing value to retrieve the child to link",
-                                            "type": "string"
-                                        },
-                                        "parentField": {
-                                            "description": "The child entity field name containing the relation with parent",
-                                            "type": "string"
-                                        }
+                                "type": "object",
+                                "properties": {
+                                    "parentColumn": {
+                                        "description": "The CSV column name containing parent relation",
+                                        "type": "string"
                                     },
-                                    "required": ["parentColumn", "mappedByColumn", "childKeyColumn", "parentField"],
-                                    "additionalProperties": false
-                                }
+                                    "mappedByColumn": {
+                                        "description": "The CSV column name containing value to retrieve the parent to link",
+                                        "type": "string"
+                                    },
+                                    "childKeyColumn": {
+                                        "description": "The CSV column name containing value to retrieve the child to link",
+                                        "type": "string"
+                                    },
+                                    "parentField": {
+                                        "description": "The child entity field name containing the relation with parent",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["parentColumn", "mappedByColumn", "childKeyColumn", "parentField"],
+                                "additionalProperties": false
                             },
-                            "manyToManyMapping": {
-                                "description": "The many-to-many mapping array",
+                            "cardinalRelations": {
+                                "description": "The mapping array for cardinal relations (one-to-one, one-to-many, many-to-one, many-to-many)",
                                 "type": "array",
                                 "minItems": 1,
                                 "items": {
                                     "type": "object",
                                     "properties": {
+                                        "cardinality": {
+                                            "description": "The cardinality type",
+                                            "type": "string",
+                                            "enum": ["one-to-one", "one-to-many", "many-to-one", "many-to-many"]
+                                        },
                                         "targetEntity": {
                                             "description": "The name of the entity to be linked",
                                             "type": "string"
@@ -137,7 +138,14 @@
                                             "type": "string"
                                         }
                                     },
-                                    "required": ["targetEntity", "targetKeyColumn", "targetKeyField", "sourceKeyColumn", "sourceRelationField"],
+                                    "required": [
+                                        "cardinality",
+                                        "targetEntity",
+                                        "targetKeyColumn",
+                                        "targetKeyField",
+                                        "sourceKeyColumn",
+                                        "sourceRelationField"
+                                    ],
                                     "additionalProperties": false
                                 }
                             },

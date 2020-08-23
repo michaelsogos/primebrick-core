@@ -31,8 +31,8 @@ class DataInitCsvOptions {
     header: boolean;
     checkColumns: string[];
     quoteChar: string;
-    relationsMapping: DataInitRelationMapping[];
-    manyToManyMapping: DataInitManyToManyMapping[];
+    circularRelation: DataInitCircularRelation;
+    cardinalRelations: DataInitCardinalRelations[];
 }
 
 class DataInitColumnMapping {
@@ -40,14 +40,15 @@ class DataInitColumnMapping {
     field: string;
 }
 
-class DataInitRelationMapping {
+class DataInitCircularRelation {
     parentColumn: string;
     mappedByColumn: string;
     childKeyColumn: string;
     parentField: string;
 }
 
-class DataInitManyToManyMapping {
+class DataInitCardinalRelations {
+    cardinality: DataInitCardinalityType;
     targetEntity: string;
     targetKeyColumn: string;
     sourceKeyColumn: string;
@@ -66,4 +67,11 @@ enum DataInitCsvSeparatorType {
     comma,
     semicolon,
     tab,
+}
+
+export enum DataInitCardinalityType {
+    oneToOne = 'one-to-one',
+    oneToMany = 'one-to-many',
+    manyToOne = 'many-to-one',
+    manyToMany = 'many-to-many',
 }

@@ -18,13 +18,33 @@
             "csvOptions": {
                 "entity": "Role",
                 "checkColumns": ["name"],
-                "manyToManyMapping": [
+                "cardinalRelations": [
                     {
+                        "cardinality": "many-to-many",
                         "targetEntity": "User",
                         "targetKeyColumn": "$user",
                         "targetKeyField": "code",
                         "sourceKeyColumn": "name",
                         "sourceRelationField": "users"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "logins-importer",
+            "files": ["logins.csv"],
+            "type": "csv",
+            "csvOptions": {
+                "entity": "Login",
+                "checkColumns": ["username"],
+                "cardinalRelations": [
+                    {
+                        "cardinality": "one-to-one",
+                        "targetEntity": "User",
+                        "targetKeyColumn": "$user",
+                        "targetKeyField": "code",
+                        "sourceKeyColumn": "username",
+                        "sourceRelationField": "user"
                     }
                 ]
             }

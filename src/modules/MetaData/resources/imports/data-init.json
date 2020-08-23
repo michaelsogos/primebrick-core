@@ -18,16 +18,15 @@
             "csvOptions": {
                 "entity": "MetaMenuItem",
                 "checkColumns": ["importId"],
-                "relationsMapping": [
+                "circularRelation": {
+                    "parentColumn": "$parent",
+                    "mappedByColumn": "importId",
+                    "childKeyColumn": "importId",
+                    "parentField": "parent"
+                },
+                "cardinalRelations": [
                     {
-                        "parentColumn": "$parent",
-                        "mappedByColumn": "importId",
-                        "childKeyColumn": "importId",
-                        "parentField": "parent"
-                    }
-                ],
-                "manyToManyMapping": [
-                    {
+                        "cardinality": "many-to-many",
                         "targetEntity": "Role",
                         "targetKeyColumn": "$role",
                         "targetKeyField": "name",
