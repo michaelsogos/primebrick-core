@@ -9,8 +9,8 @@ import { MetaTranslation } from './entities/MetaTranslation.entity';
 @Injectable()
 export class MetadataService {
     constructor(private readonly repositoryService: TenantRepositoryService) {
-        Reflect.defineMetadata('path', 'api/meta', this);
-        Reflect.defineMetadata('__routeArguments__', { pipe: 'f' }, this, 'asd');
+        // Reflect.defineMetadata('path', 'api/meta', this);
+        // Reflect.defineMetadata('__routeArguments__', { pipe: 'f' }, this, 'asd');
     }
 
     async getAllViews(tenantAlias: string): Promise<MetaView[]> {
@@ -18,20 +18,30 @@ export class MetadataService {
         return await metaViewRepository.find();
     }
 
-    async saveNewMetaView(tenantAlias: string): Promise<void> {
-        const metaViewRepository = await this.repositoryService.getTenantRepository(tenantAlias, MetaView);
-        const newMetaView: MetaView = metaViewRepository.create();
-        newMetaView.name = 'dfdfd';
-        newMetaView.definition = { a: 1 };
-        await metaViewRepository.save(newMetaView);
-
-        const firstMetaView = await metaViewRepository.findOne(1);
-        firstMetaView.name = 'a1232244CCCBLA';
-        await metaViewRepository.save(firstMetaView);
+    async getView(context: ContextPayload, viewName: string): Promise<MetaView> {
+        const metaViewRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaView);
+        return await metaViewRepository.findOneOrFail({
+            where: {
+                name: viewName,
+            },
+            select: ['name', 'definition'],
+        });
     }
 
-    async getAllMenuItems(tenantAlias: string): Promise<MetaMenuItem[]> {
-        const metaMenuRepository = await this.repositoryService.getTenantRepository(tenantAlias, MetaMenuItem);
+    // async saveNewMetaView(tenantAlias: string): Promise<void> {
+    //     const metaViewRepository = await this.repositoryService.getTenantRepository(tenantAlias, MetaView);
+    //     const newMetaView: MetaView = metaViewRepository.create();
+    //     newMetaView.name = 'dfdfd';
+    //     newMetaView.definition = { a: 1 };
+    //     await metaViewRepository.save(newMetaView);
+
+    //     const firstMetaView = await metaViewRepository.findOne(1);
+    //     firstMetaView.name = 'a1232244CCCBLA';
+    //     await metaViewRepository.save(firstMetaView);
+    // }
+
+    async getAllMenuItems(context: ContextPayload): Promise<MetaMenuItem[]> {
+        const metaMenuRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaMenuItem);
         const treeRepostory = metaMenuRepository.manager.getTreeRepository(MetaMenuItem);
         return await treeRepostory.findTrees();
     }

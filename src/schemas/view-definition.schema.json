@@ -1,0 +1,88 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://primebrick-sdk/view-definition.schema.json",
+    "title": "ViewDefinition",
+    "description": "The view definition model",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "description": "JSON Schema URL or path",
+            "type": "string"
+        },
+        "version": {
+            "description": "Definition version",
+            "type": "string"
+        },
+        "name": {
+            "description": "View name",
+            "type": "string"
+        },
+        "labelKey": {
+            "description": "View title translatable key",
+            "type": "string"
+        },
+        "icon": {
+            "description": "View icon",
+            "type": "string"
+        },
+        "color": {
+            "description": "View main color",
+            "type": "string"
+        },
+        "definition": {
+            "description": "View definition",
+            "type": "object",
+            "properties": {
+                "entity": {
+                    "description": "Entity name",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "View type",
+                    "type": "string",
+                    "enum": ["grid", "form", "card"]
+                },
+                "fields": {
+                    "description": "List of fields to show",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "description": "Field name",
+                                "type": "string"
+                            },
+                            "labelKey": {
+                                "description": "Field label translatable key",
+                                "type": "string"
+                            },
+                            "perms": {
+                                "description": "List of permission needed to access to this field",
+                                "type": "array",
+                                "minItems": 0,
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": ["name", "labelKey"],
+                        "additionalProperties": false
+                    }
+                },
+                "perms": {
+                    "description": "List of permission needed to access to this view",
+                    "type": "array",
+                    "minItems": 0,
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["entity", "type", "fields"],
+            "additionalProperties": false
+        }
+    },
+    "required": ["name", "labelKey", "definition"],
+    "additionalProperties": false
+}

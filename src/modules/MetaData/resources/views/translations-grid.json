@@ -1,0 +1,31 @@
+{
+    "$schema": "../../../../schemas/view-definition.schema.json",
+    "name": "translations-grid",
+    "labelKey": "translations",
+    "definition": {
+        "entity": "MetaTranslation",
+        "type": "grid",
+        "fields": [
+            {
+                "name": "key",
+                "labelKey": "key"
+            },
+            {
+                "name": "languageCode",
+                "labelKey": "language-code"
+            },
+            {
+                "name": "value",
+                "labelKey": "translation"
+            },
+            {
+                "name": "group",
+                "labelKey": "group"
+            },
+            {
+                "name": "isTemplate",
+                "labelKey": "template"
+            }
+        ]
+    }
+}

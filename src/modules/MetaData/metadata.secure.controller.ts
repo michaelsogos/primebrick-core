@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Query } from '@nestjs/common';
 import { MetadataService } from './metadata.service';
 import { MetaView } from './entities/metaView.entity';
 import { Tenant, AuthGuard, Context, ContextPayload } from 'primebrick-sdk';
@@ -9,15 +9,20 @@ import { MetaMenuItem } from './entities/MetaMenuItem.entity';
 export class MetadataSecureController {
     constructor(private readonly metadataService: MetadataService) {}
 
-    @Get('view')
+    @Get('views')
     async getAllView(@Tenant() tenantAlias: string): Promise<MetaView[]> {
         return this.metadataService.getAllViews(tenantAlias);
     }
 
-    @Post('view')
-    async postMetaView(@Tenant() tenantAlias: string): Promise<void> {
-        await this.metadataService.saveNewMetaView(tenantAlias);
+    @Get('view')
+    async getView(@Context() context: ContextPayload, @Query('viewName') viewName: string): Promise<MetaView> {
+        return await this.metadataService.getView(context, viewName);
     }
+
+    // @Post('view')
+    // async postMetaView(@Tenant() tenantAlias: string): Promise<void> {
+    //     await this.metadataService.saveNewMetaView(tenantAlias);
+    // }
 
     @Get('info')
     async getAppInfo(): Promise<any> {

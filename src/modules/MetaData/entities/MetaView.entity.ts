@@ -5,6 +5,7 @@ import { AudibleEntity } from 'primebrick-sdk';
 export class MetaView extends AudibleEntity {
     @Column({
         nullable: false,
+        unique: true,
     })
     name: string;
 

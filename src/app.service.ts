@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Migration, getManager } from 'typeorm';
+import { Migration } from 'typeorm';
 import { TenantRepositoryService } from 'primebrick-sdk';
 import * as path from 'path';
 import * as fs from 'fs';
