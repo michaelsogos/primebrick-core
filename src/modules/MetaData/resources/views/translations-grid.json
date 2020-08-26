@@ -26,6 +26,11 @@
                 "name": "isTemplate",
                 "labelKey": "template"
             }
+        ],
+        "filters": [
+            {
+                "expressions": ["$self.languageCode = 'it'"]
+            }
         ]
     },
     "alternativeViews": [
@@ -33,5 +38,71 @@
             "name": "translations-cards",
             "type": "cards"
         }
-    ]
+    ],
+    "actions": {
+        "onView": {
+            "view": "df",
+            "enableToolbar": false,
+            "enableDoubleClick": false,
+            "enableRowButton": false,
+            "enableMenu": false
+        },
+        "onEdit": {
+            "view": "df",
+            "enableToolbar": false,
+            "enableDoubleClick": false,
+            "enableRowButton": false,
+            "enableMenu": false
+        },
+        "onAdd": {
+            "view": "df",
+            "enableToolbar": false,
+            "enableDoubleClick": false,
+            "enableRowButton": false,
+            "enableFloatingButton": false,
+            "enableMenu": false
+        },
+        "onDelete": {
+            "enableToolbar": false,
+            "enableRowButton": false,
+            "enableMenu": false
+        },
+        "onArchive": {
+            "enableToolbar": false,
+            "enableRowButton": false,
+            "enableMenu": false
+        },
+        "onRefresh": {
+            "enableToolbar": false,
+            "enableMenu": false
+        },
+        "onSearch": {
+            "enableToolbar": false,
+            "fields": ["a", "v"]
+        },
+        "onFilter": {
+            "enableColumns": false,
+            "enableDialog": false,
+            "fields": ["a", "f"]
+        },
+        "customActions": [
+            {
+                "type": "text",
+                "name": "ciccio",
+                "labelKey": "aasd"
+            }
+        ]
+    },
+    "events": {
+        "onLoadData": {
+            "waitUntil": [
+                {
+                    "source": "customAction",
+                    "name": "ciccio",
+                    "operator": "is",
+                    "expression": "NotNull"
+                }
+            ]
+        }
+    }
 }

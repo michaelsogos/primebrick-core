@@ -91,6 +91,38 @@
                         "additionalProperties": false
                     }
                 },
+                "filters": {
+                    "description": "List of filters to apply",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "leftOperator": {
+                                "description": "Logical operator AND/OR before the expression block",
+                                "type": "string",
+                                "enum": ["AND", "OR"],
+                                "default": "AND"
+                            },
+                            "expressionOperator": {
+                                "description": "Logical operator AND/OR between expression values",
+                                "type": "string",
+                                "enum": ["AND", "OR"],
+                                "default": "AND"
+                            },
+                            "expressions": {
+                                "description": "Array of conditions to apply",
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "required": ["expressions"],
+                        "additionalProperties": false
+                    }
+                },
                 "perms": {
                     "description": "List of permission needed to access to this view",
                     "type": "array",
