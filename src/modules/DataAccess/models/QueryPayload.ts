@@ -2,15 +2,28 @@ export class QueryPayload {
     entity: string;
     fields: string[];
     filters: QueryFilter[];
+    sorts: QuerySort[];
+    take: number;
+    skip: number;
 }
 
 class QueryFilter {
-    leftOperator: QueryOperator;
-    expressionOperator: QueryOperator;
+    leftOperator: QueryFilterOperator;
+    expressionOperator: QueryFilterOperator;
     expressions: string[];
 }
 
-export enum QueryOperator {
+class QuerySort {
+    field: string;
+    direction: QuerySortDirection;
+}
+
+export enum QueryFilterOperator {
     AND = 'AND',
     OR = 'OR',
+}
+
+export enum QuerySortDirection {
+    ASC = 'ASC',
+    DESC = 'DESC',
 }

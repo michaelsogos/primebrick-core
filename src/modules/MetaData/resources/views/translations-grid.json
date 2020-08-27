@@ -31,6 +31,12 @@
             {
                 "expressions": ["$self.languageCode = 'it'"]
             }
+        ],
+        "sorts": [
+            {
+                "field": "key",
+                "direction": "ASC"
+            }
         ]
     },
     "alternativeViews": [

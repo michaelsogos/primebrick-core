@@ -123,6 +123,28 @@
                         "additionalProperties": false
                     }
                 },
+                "sorts": {
+                    "description": "List of sort conditions to apply",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "description": "Field name to sort with",
+                                "type": "string"
+                            },
+                            "direction": {
+                                "description": "Direction to sort with",
+                                "type": "string",
+                                "enum": ["ASC", "DESC"],
+                                "default": "ASC"
+                            }
+                        },
+                        "required": ["field"],
+                        "additionalProperties": false
+                    }
+                },
                 "perms": {
                     "description": "List of permission needed to access to this view",
                     "type": "array",
