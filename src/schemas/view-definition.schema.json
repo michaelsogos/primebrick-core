@@ -156,6 +156,93 @@
             },
             "required": ["entity", "type", "fields"],
             "additionalProperties": false
+        },
+        "options": {
+            "description": "Grid options",
+            "type": "object",
+            "properties": {
+                "enableMultiSelect": {
+                    "description": "Allow selection of many rows",
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "actions": {
+            "description": "List of configurable actions",
+            "type": "object",
+            "properties": {
+                "open": {
+                    "description": "[ Open ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "view": {
+                            "description": "View to show",
+                            "type": "string"
+                        },
+                        "enableDoubleClick": {
+                            "description": "Show view on double click",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableRowButton": {
+                            "description": "Show button on row",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "edit": {
+                    "description": "[ Edit ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "view": {
+                            "description": "View to show",
+                            "type": "string"
+                        },
+                        "enableDoubleClick": {
+                            "description": "Show view on double click",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableRowButton": {
+                            "description": "Show button on row",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "add": {
+                    "description": "[ Add ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "view": {
+                            "description": "View to show",
+                            "type": "string"
+                        },
+                        "enableToolbarButton": {
+                            "description": "Show button in toolbar",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableFloatingButton": {
+                            "description": "Show floating action button",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableMenuLink": {
+                            "description": "Show link in menu",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
         }
     },
     "required": ["name", "labelKey", "definition"],

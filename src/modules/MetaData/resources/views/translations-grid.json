@@ -45,28 +45,25 @@
             "type": "cards"
         }
     ],
+    "options": {
+        "enableMultiSelect": false
+    },
     "actions": {
-        "onView": {
+        "open": {
             "view": "df",
-            "enableToolbar": false,
             "enableDoubleClick": false,
-            "enableRowButton": false,
-            "enableMenu": false
+            "enableRowButton": false
         },
-        "onEdit": {
+        "edit": {
             "view": "df",
-            "enableToolbar": false,
-            "enableDoubleClick": false,
-            "enableRowButton": false,
-            "enableMenu": false
+            "enableDoubleClick": true,
+            "enableRowButton": true
         },
-        "onAdd": {
+        "add": {
             "view": "df",
-            "enableToolbar": false,
-            "enableDoubleClick": false,
-            "enableRowButton": false,
+            "enableToolbarButton": false,
             "enableFloatingButton": false,
-            "enableMenu": false
+            "enableMenuLink": false
         },
         "onDelete": {
             "enableToolbar": false,
