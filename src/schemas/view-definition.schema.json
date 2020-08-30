@@ -85,6 +85,12 @@
                                 "items": {
                                     "type": "string"
                                 }
+                            },
+                            "type": {
+                                "description": "Field type",
+                                "type": "string",
+                                "enum": ["string", "number", "boolean"],
+                                "default": "string"
                             }
                         },
                         "required": ["name", "labelKey"],

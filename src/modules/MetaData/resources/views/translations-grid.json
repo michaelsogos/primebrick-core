@@ -24,7 +24,8 @@
             },
             {
                 "name": "isTemplate",
-                "labelKey": "template"
+                "labelKey": "template",
+                "type": "boolean"
             }
         ],
         "filters": [
