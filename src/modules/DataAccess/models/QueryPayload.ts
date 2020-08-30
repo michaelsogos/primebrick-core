@@ -11,6 +11,7 @@ class QueryFilter {
     leftOperator: QueryFilterOperator;
     expressionOperator: QueryFilterOperator;
     expressions: string[];
+    expressionValues: any;
 }
 
 class QuerySort {

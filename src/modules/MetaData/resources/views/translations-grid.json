@@ -65,28 +65,28 @@
             "enableFloatingButton": false,
             "enableMenuLink": false
         },
-        "onDelete": {
-            "enableToolbar": false,
+        "delete": {
+            "enableToolbarButton": false,
             "enableRowButton": false,
-            "enableMenu": false
+            "enableMenuLink": false
         },
-        "onArchive": {
-            "enableToolbar": false,
+        "archive": {
+            "enableToolbarButton": false,
             "enableRowButton": false,
-            "enableMenu": false
+            "enableMenuLink": false
         },
-        "onRefresh": {
-            "enableToolbar": false,
-            "enableMenu": false
+        "refresh": {
+            "enableToolbarButton": false,
+            "enableMenuLink": false
         },
-        "onSearch": {
-            "enableToolbar": false,
+        "search": {
+            "enableToolbarButton": false,
             "fields": ["a", "v"]
         },
-        "onFilter": {
+        "filter": {
             "enableColumns": false,
-            "enableDialog": false,
-            "fields": ["a", "f"]
+            "enableToolbarButton": false,
+            "fields": [{ "field": "key", "type": "string" }]
         },
         "customActions": [
             {

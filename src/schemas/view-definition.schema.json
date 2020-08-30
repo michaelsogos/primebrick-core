@@ -117,6 +117,11 @@
                                 "items": {
                                     "type": "string"
                                 }
+                            },
+                            "expressionValues": {
+                                "description": "Object with parametrized values",
+                                "examples": ["{valueAlias: value}"],
+                                "type": "object"
                             }
                         },
                         "required": ["expressions"],
@@ -237,6 +242,124 @@
                             "description": "Show link in menu",
                             "type": "boolean",
                             "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "delete": {
+                    "description": "[ Delete ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "enableToolbarButton": {
+                            "description": "Show button in toolbar",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableMenuLink": {
+                            "description": "Show link in menu",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableRowButton": {
+                            "description": "Show button on row",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "archive": {
+                    "description": "[ Archive ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "enableToolbarButton": {
+                            "description": "Show button in toolbar",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableMenuLink": {
+                            "description": "Show link in menu",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableRowButton": {
+                            "description": "Show button on row",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "refresh": {
+                    "description": "[ Refresh ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "enableToolbarButton": {
+                            "description": "Show button in toolbar",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableMenuLink": {
+                            "description": "Show link in menu",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "search": {
+                    "description": "[ Search ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "enableToolbarButton": {
+                            "description": "Show search box in toolbar",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "fields": {
+                            "description": "List fields to looking for",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "filter": {
+                    "description": "[ Filter ] action configuration",
+                    "type": "object",
+                    "properties": {
+                        "enableColumns": {
+                            "description": "Show filter field under column header",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "enableToolbarButton": {
+                            "description": "Show button in toolbar",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "fields": {
+                            "description": "List fields to allow filter",
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "field": {
+                                        "description": "Field name to allow filter",
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "description": "Type of filter",
+                                        "type": "string",
+                                        "enum": ["string"]
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
                         }
                     },
                     "additionalProperties": false

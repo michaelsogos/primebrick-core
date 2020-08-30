@@ -26,8 +26,8 @@ export class DataAccessService {
                         new Brackets(qb => {
                             for (const condition of filter.expressions) {
                                 if (filter.expressionOperator && filter.expressionOperator == QueryFilterOperator.OR)
-                                    qb.orWhere(condition.replace('$self', query.entity));
-                                else qb.andWhere(condition.replace('$self', query.entity));
+                                    qb.orWhere(condition.replace('$self', query.entity), filter.expressionValues || null);
+                                else qb.andWhere(condition.replace('$self', query.entity), filter.expressionValues || null);
                             }
                         }),
                     );
@@ -36,8 +36,8 @@ export class DataAccessService {
                         new Brackets(qb => {
                             for (const condition of filter.expressions) {
                                 if (filter.expressionOperator && filter.expressionOperator == QueryFilterOperator.OR)
-                                    qb.orWhere(condition.replace('$self', query.entity));
-                                else qb.andWhere(condition.replace('$self', query.entity));
+                                    qb.orWhere(condition.replace('$self', query.entity), filter.expressionValues || null);
+                                else qb.andWhere(condition.replace('$self', query.entity), filter.expressionValues || null);
                             }
                         }),
                     );
