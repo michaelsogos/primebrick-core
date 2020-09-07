@@ -2,13 +2,27 @@ import { Injectable } from '@nestjs/common';
 import { TenantRepositoryService, ContextPayload } from 'primebrick-sdk';
 import { QueryPayload, QueryFilterOperator, QuerySortDirection } from './models/QueryPayload';
 import { QueryResult } from './models/QueryResult';
-import { Brackets } from 'typeorm';
+import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class DataAccessService {
     constructor(private readonly repositoryService: TenantRepositoryService) {}
 
     async find(context: ContextPayload, query: QueryPayload): Promise<QueryResult> {
+        const queryBuilder = await this.getQueryBuilder(context, query);
+
+        const result = await queryBuilder.getManyAndCount();
+        return new QueryResult(result[0], result[1]);
+    }
+
+    async findOne(context: ContextPayload, query: QueryPayload): Promise<QueryResult> {
+        const queryBuilder = await this.getQueryBuilder(context, query);
+
+        const result = await queryBuilder.getOne();
+        return new QueryResult([result], 1);
+    }
+
+    private async getQueryBuilder(context: ContextPayload, query: QueryPayload): Promise<SelectQueryBuilder<unknown>> {
         const dbconn = await this.repositoryService.getTenantConnection(context.tenantAlias);
         const queryBuilder = dbconn.createQueryBuilder(query.entity, query.entity);
 
@@ -58,7 +72,6 @@ export class DataAccessService {
 
         if (query.skip) queryBuilder.skip(query.skip);
 
-        const result = await queryBuilder.getManyAndCount();
-        return new QueryResult(result[0], result[1]);
+        return queryBuilder;
     }
 }

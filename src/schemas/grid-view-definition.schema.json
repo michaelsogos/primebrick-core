@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://primebrick-sdk/view-definition.schema.json",
-    "title": "ViewDefinition",
-    "description": "The view definition model",
+    "$id": "http://primebrick-sdk/grid-view-definition.schema.json",
+    "title": "GridViewDefinition",
+    "description": "The grid view definition model",
     "type": "object",
     "properties": {
         "$schema": {
@@ -361,7 +361,7 @@
                                     "type": {
                                         "description": "Type of filter",
                                         "type": "string",
-                                        "enum": ["string"]
+                                        "enum": ["string", "list", "search"]
                                     }
                                 },
                                 "additionalProperties": false
@@ -372,6 +372,47 @@
                 }
             },
             "additionalProperties": false
+        },
+        "highlighters": {
+            "description": "List of highlight rules",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "expression": {
+                        "description": "Conditional expression",
+                        "type": "string"
+                    },
+                    "backgroundColor": {
+                        "description": "Background color",
+                        "type": "string"
+                    },
+                    "fontColor": {
+                        "description": "Font color",
+                        "type": "string"
+                    },
+                    "fontWeight": {
+                        "description": "Font weight",
+                        "type": "string",
+                        "enum": ["black", "bold", "medium", "regular", "light", "thin"],
+                        "default": "regular"
+                    },
+                    "fontStyle": {
+                        "description": "Font style",
+                        "type": "string",
+                        "enum": ["none", "line-through", "overline", "underline"],
+                        "default": "none"
+                    },
+                    "fontItalic": {
+                        "description": "Font italic",
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": ["expression"],
+                "additionalProperties": false
+            }
         }
     },
     "required": ["name", "labelKey", "definition"],

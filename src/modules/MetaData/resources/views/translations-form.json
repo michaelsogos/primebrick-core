@@ -1,31 +1,42 @@
 {
-    "$schema": "../../../../schemas/grid-view-definition.schema.json",
-    "name": "translations-grid",
-    "labelKey": "translations",
+    "$schema": "../../../../schemas/form-view-definition.schema.json",
+    "name": "translations-form",
+    "labelKey": "translation",
     "definition": {
         "entity": "MetaTranslation",
-        "type": "grid",
-        "fields": [
+        "type": "form",
+        "containers": [
             {
-                "name": "key",
-                "labelKey": "key"
-            },
-            {
-                "name": "languageCode",
-                "labelKey": "language-code"
-            },
-            {
-                "name": "value",
-                "labelKey": "translation"
-            },
-            {
-                "name": "group",
-                "labelKey": "group"
-            },
-            {
-                "name": "isTemplate",
-                "labelKey": "template",
-                "type": "boolean"
+                "cols": 12,
+                "showTitle": false,
+                "fields": [
+                    {
+                        "name": "key",
+                        "labelKey": "key",
+                        "cols": 6,
+                        "type": "string",
+                        "require": false,
+                        "validation": [],
+                        "translatable": false
+                    },
+                    {
+                        "name": "languageCode",
+                        "labelKey": "language-code"
+                    },
+                    {
+                        "name": "value",
+                        "labelKey": "translation"
+                    },
+                    {
+                        "name": "group",
+                        "labelKey": "group"
+                    },
+                    {
+                        "name": "isTemplate",
+                        "labelKey": "template",
+                        "type": "boolean"
+                    }
+                ]
             }
         ],
         "filters": [
@@ -51,17 +62,17 @@
     },
     "actions": {
         "open": {
-            "view": "translations-form",
+            "view": "df",
             "enableDoubleClick": false,
             "enableRowButton": false
         },
         "edit": {
-            "view": "translations-form",
+            "view": "df",
             "enableDoubleClick": true,
             "enableRowButton": true
         },
         "add": {
-            "view": "translations-form",
+            "view": "df",
             "enableToolbarButton": false,
             "enableFloatingButton": false,
             "enableMenuLink": false

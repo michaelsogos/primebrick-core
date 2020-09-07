@@ -13,4 +13,9 @@ export class DataAccessSecureController {
     async find(@Context() context: ContextPayload, @Body() query: QueryPayload): Promise<QueryResult> {
         return await this.dataAccessService.find(context, query);
     }
+
+    @Post('findOne')
+    async findOne(@Context() context: ContextPayload, @Body() query: QueryPayload): Promise<QueryResult> {
+        return await this.dataAccessService.findOne(context, query);
+    }
 }
