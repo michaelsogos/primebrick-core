@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { TenantRepositoryService, ContextPayload } from 'primebrick-sdk';
-import { QueryPayload, QueryFilterOperator, QuerySortDirection } from './models/QueryPayload';
+import {
+    QueryPayload,
+    QueryFilterOperator,
+    QuerySortDirection,
+    QueryJoinType,
+    QueryJoin,
+    QueryJoinCondition,
+    QueryField,
+} from './models/QueryPayload';
 import { QueryResult } from './models/QueryResult';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
@@ -29,9 +37,41 @@ export class DataAccessService {
         if (query.fields && query.fields.length > 0) {
             queryBuilder.select([`${query.entity}.id`]);
             for (const field of query.fields) {
-                queryBuilder.addSelect(`${query.entity}.${field}`);
+                if (typeof field === 'string') queryBuilder.addSelect(`${query.entity}.${field}`);
+                else queryBuilder.addSelect(field.expression.replace('$self', query.entity), field.alias);
             }
         }
+
+        if (query.joins && query.joins.length > 0)
+            for (const join of query.joins) {
+                switch (join.type) {
+                    case QueryJoinType.INNER:
+                        {
+                            queryBuilder.innerJoin(
+                                join.entity,
+                                join.alias,
+                                join.condition.expression.replace('$self', query.entity),
+                                join.condition.expressionValues,
+                            );
+                        }
+                        break;
+                    case QueryJoinType.LEFT:
+                        {
+                            queryBuilder.leftJoin(
+                                join.entity,
+                                join.alias,
+                                join.condition.expression.replace('$self', query.entity),
+                                join.condition.expressionValues,
+                            );
+                        }
+                        break;
+                }
+
+                for (const field of join.fields) {
+                    if (typeof field === 'string') queryBuilder.addSelect(`${join.alias}.${field}`);
+                    else queryBuilder.addSelect(field.expression.replace('$self', query.entity), field.alias);
+                }
+            }
 
         if (query.filters && query.filters.length > 0) {
             for (const filter of query.filters) {
@@ -73,5 +113,90 @@ export class DataAccessService {
         if (query.skip) queryBuilder.skip(query.skip);
 
         return queryBuilder;
+    }
+
+    async save(context: ContextPayload, entityName: string, entity: unknown): Promise<QueryResult> {
+        const dbconn = await this.repositoryService.getTenantConnection(context.tenantAlias);
+        const repository = dbconn.getRepository(entityName);
+        const savedEntity = await repository.save(repository.create(entity));
+        return new QueryResult([savedEntity], 1);
+    }
+
+    async info(context: ContextPayload, query: QueryPayload): Promise<QueryResult> {
+        query.fields = [];
+        const versionField = new QueryField();
+        versionField.expression = '$self.version';
+        versionField.alias = 'version';
+        const createdOnField = new QueryField();
+        createdOnField.expression = '$self.createdOn';
+        createdOnField.alias = 'createdOn';
+        const updatedOnField = new QueryField();
+        updatedOnField.expression = '$self.updatedOn';
+        updatedOnField.alias = 'updatedOn';
+        const deletedOnField = new QueryField();
+        deletedOnField.expression = '$self.deletedOn';
+        deletedOnField.alias = 'deletedOn';
+        const importedOnField = new QueryField();
+        importedOnField.expression = '$self.importedOn';
+        importedOnField.alias = 'importedOn';
+        query.fields.push(...[versionField, createdOnField, updatedOnField, deletedOnField, importedOnField]);
+
+        query.joins = [];
+        const ownerJoin = new QueryJoin();
+        ownerJoin.entity = 'User';
+        ownerJoin.alias = 'owner';
+        ownerJoin.type = QueryJoinType.LEFT;
+        const ownerJoinCondition = new QueryJoinCondition();
+        ownerJoinCondition.expression = `owner.id = $self.createdBy`;
+        ownerJoin.condition = ownerJoinCondition;
+        const ownerNameField = new QueryField();
+        ownerNameField.expression = "(owner.firstName || ' ' || owner.lastName)";
+        ownerNameField.alias = 'createdBy';
+        ownerJoin.fields = [ownerNameField];
+        query.joins.push(ownerJoin);
+
+        const editorJoin = new QueryJoin();
+        editorJoin.entity = 'User';
+        editorJoin.alias = 'editor';
+        editorJoin.type = QueryJoinType.LEFT;
+        const editorJoinCondition = new QueryJoinCondition();
+        editorJoinCondition.expression = `editor.id = $self.updatedBy`;
+        editorJoin.condition = editorJoinCondition;
+        const editorNameField = new QueryField();
+        editorNameField.expression = "(editor.firstName || ' ' || editor.lastName)";
+        editorNameField.alias = 'updatedBy';
+        editorJoin.fields = [editorNameField];
+        query.joins.push(editorJoin);
+
+        const deleterJoin = new QueryJoin();
+        deleterJoin.entity = 'User';
+        deleterJoin.alias = 'deleter';
+        deleterJoin.type = QueryJoinType.LEFT;
+        const deleterJoinCondition = new QueryJoinCondition();
+        deleterJoinCondition.expression = `deleter.id = $self.deletedBy`;
+        deleterJoin.condition = deleterJoinCondition;
+        const deleterNameField = new QueryField();
+        deleterNameField.expression = "(deleter.firstName || ' ' || deleter.lastName)";
+        deleterNameField.alias = 'deletedBy';
+        deleterJoin.fields = [deleterNameField];
+        query.joins.push(deleterJoin);
+
+        const importerJoin = new QueryJoin();
+        importerJoin.entity = 'User';
+        importerJoin.alias = 'importer';
+        importerJoin.type = QueryJoinType.LEFT;
+        const importerJoinCondition = new QueryJoinCondition();
+        importerJoinCondition.expression = `importer.id = $self.importedBy`;
+        importerJoin.condition = importerJoinCondition;
+        const importerNameField = new QueryField();
+        importerNameField.expression = "(importer.firstName || ' ' || importer.lastName)";
+        importerNameField.alias = 'importedBy';
+        importerJoin.fields = [importerNameField];
+        query.joins.push(importerJoin);
+
+        const queryBuilder = await this.getQueryBuilder(context, query);
+
+        const result = await queryBuilder.getRawOne();
+        return new QueryResult([result], 1);
     }
 }

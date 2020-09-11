@@ -15,8 +15,12 @@
                         "labelKey": "key",
                         "cols": 6,
                         "type": "string",
-                        "require": false,
-                        "validation": [],
+                        "validationRules": [
+                            {
+                                "rule": "required",
+                                "labelKey": "field_required"
+                            }
+                        ],
                         "translatable": false
                     },
                     {
@@ -34,71 +38,28 @@
                     {
                         "name": "isTemplate",
                         "labelKey": "template",
-                        "type": "boolean"
+                        "type": "switch"
                     }
                 ]
             }
-        ],
-        "filters": [
-            {
-                "expressions": ["$self.languageCode = 'it'"]
-            }
-        ],
-        "sorts": [
-            {
-                "field": "key",
-                "direction": "ASC"
-            }
         ]
     },
-    "alternativeViews": [
-        {
-            "name": "translations-cards",
-            "type": "cards"
-        }
-    ],
-    "options": {
-        "enableMultiSelect": false
-    },
     "actions": {
-        "open": {
-            "view": "df",
-            "enableDoubleClick": false,
-            "enableRowButton": false
-        },
-        "edit": {
-            "view": "df",
-            "enableDoubleClick": true,
-            "enableRowButton": true
-        },
-        "add": {
-            "view": "df",
-            "enableToolbarButton": false,
-            "enableFloatingButton": false,
+        "save": {
+            "enableToolbarButton": true,
             "enableMenuLink": false
         },
         "delete": {
             "enableToolbarButton": false,
-            "enableRowButton": false,
             "enableMenuLink": false
         },
         "archive": {
             "enableToolbarButton": false,
-            "enableRowButton": false,
             "enableMenuLink": false
         },
         "refresh": {
             "enableToolbarButton": false,
             "enableMenuLink": false
-        },
-        "search": {
-            "enableToolbarButton": false,
-            "fields": ["a", "v"]
-        },
-        "filter": {
-            "enableColumns": false,
-            "enableToolbarButton": false,
-            "fields": [{ "field": "key", "type": "string" }]
         },
         "customActions": [
             {
@@ -119,15 +80,5 @@
                 }
             ]
         }
-    },
-    "highlighters": [
-        {
-            "expression": "group == 'main'",
-            "backgroundColor": "red",
-            "fontColor": "white",
-            "fontWeight": "bold",
-            "fontStyle": "line-through",
-            "fontItalic": true
-        }
-    ]
+    }
 }

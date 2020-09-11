@@ -8,3 +8,4 @@ login-hint;en;Enter credentials to access;false;
 username;en;Username;false;
 password;en;Password;false;
 login-failed;en;Invalid credentials;false;
+not-valid-input-field;it;The field ${name} is not valid:;true;

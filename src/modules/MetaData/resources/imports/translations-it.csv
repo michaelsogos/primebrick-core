@@ -8,3 +8,4 @@ login-hint;it;Inserire le credenziali per accedere;false;
 username;it;Nome Utente;false;
 password;it;Password;false;
 login-failed;it;Credenziali non valide;false;
+not-valid-input-field;it;Il campo ${name} non è valido:;true;
