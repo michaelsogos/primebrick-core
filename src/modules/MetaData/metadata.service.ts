@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { MetaView } from './entities/metaView.entity';
-import { TenantRepositoryService, ContextPayload } from 'primebrick-sdk';
+import { TenantRepositoryService, ContextPayload, AdvancedLogger } from 'primebrick-sdk';
 import { MetaMenuItem } from './entities/MetaMenuItem.entity';
 import { In, Brackets } from 'typeorm';
 import { Role } from '../Auth/entities/Role.entity';
@@ -8,6 +8,8 @@ import { MetaTranslation } from './entities/MetaTranslation.entity';
 
 @Injectable()
 export class MetadataService {
+    private readonly logger = new AdvancedLogger('MetadataService', true);
+
     constructor(private readonly repositoryService: TenantRepositoryService) {}
 
     async getAllViews(tenantAlias: string): Promise<MetaView[]> {
@@ -24,7 +26,7 @@ export class MetadataService {
                 },
                 select: ['definition'],
             });
-
+            this.logger.debug('ciccio');
             return view.definition;
         } catch (ex) {
             //TODO: @michaelsogos -> send error to logging system
