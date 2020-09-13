@@ -8,6 +8,7 @@
             "type": "csv",
             "csvOptions": {
                 "entity": "User",
+                "encoding": "utf8",
                 "checkColumns": ["code"]
             }
         },
@@ -17,6 +18,7 @@
             "type": "csv",
             "csvOptions": {
                 "entity": "Role",
+                "encoding": "utf8",
                 "checkColumns": ["name"],
                 "cardinalRelations": [
                     {
@@ -36,6 +38,7 @@
             "type": "csv",
             "csvOptions": {
                 "entity": "Login",
+                "encoding": "utf8",
                 "checkColumns": ["username"],
                 "cardinalRelations": [
                     {

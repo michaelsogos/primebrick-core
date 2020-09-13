@@ -24,6 +24,7 @@ export class MetadataService {
                 },
                 select: ['definition'],
             });
+
             return view.definition;
         } catch (ex) {
             //TODO: @michaelsogos -> send error to logging system
@@ -67,7 +68,7 @@ export class MetadataService {
         if (group) query.where('t.group = :group', { group: group });
         else {
             query.where(
-                new Brackets(qb => {
+                new Brackets((qb) => {
                     qb.where('t.group is null');
                     qb.orWhere('t.group = :group', { group: '' });
                 }),

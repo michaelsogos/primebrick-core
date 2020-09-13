@@ -8,6 +8,7 @@
             "type": "csv",
             "csvOptions": {
                 "entity": "MetaTranslation",
+                "encoding": "utf8",
                 "checkColumns": ["key", "languageCode"]
             }
         },
@@ -17,6 +18,7 @@
             "type": "csv",
             "csvOptions": {
                 "entity": "MetaMenuItem",
+                "encoding": "utf8",
                 "checkColumns": ["importId"],
                 "circularRelation": {
                     "parentColumn": "$parent",

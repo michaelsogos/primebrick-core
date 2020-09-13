@@ -9,16 +9,10 @@ export class Role extends AudibleEntity {
     @Column({ unique: true })
     name: string;
 
-    @ManyToMany(
-        type => User,
-        T => T.roles,
-    )
+    @ManyToMany((type) => User, (T) => T.roles)
     users: User[];
 
-    @ManyToMany(
-        type => MetaMenuItem,
-        T => T.roles,
-    )
+    @ManyToMany((type) => MetaMenuItem, (T) => T.roles)
     @JoinTable()
     menuItems: MetaMenuItem[];
 }

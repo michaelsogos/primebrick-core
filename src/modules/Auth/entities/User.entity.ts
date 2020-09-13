@@ -21,17 +21,10 @@ export class User extends AudibleEntity {
     @Column({ nullable: true })
     languageCode: string;
 
-    @OneToOne(
-        type => Login,
-        T => T.user,
-    )
+    @OneToOne((type) => Login, (T) => T.user)
     login: Login;
 
-    @ManyToMany(
-        type => Role,
-        T => T.users,
-        { eager: true },
-    )
+    @ManyToMany((type) => Role, (T) => T.users, { eager: true })
     @JoinTable()
     roles: Role[];
 }

@@ -11,10 +11,7 @@ export class Login extends AudibleEntity {
     @Column()
     password: string; //TODO: @mso-> save hashed password
 
-    @OneToOne(
-        type => User,
-        T => T.login,
-    )
+    @OneToOne((type) => User, (T) => T.login)
     @JoinColumn()
     user: User;
 }
