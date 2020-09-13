@@ -5790,10 +5790,10 @@ pretty-format@^26.4.2:
     ansi-styles "^4.0.0"
     react-is "^16.12.0"
 
-primebrick-sdk@^0.70.0:
-  version "0.70.0"
-  resolved "https://registry.yarnpkg.com/primebrick-sdk/-/primebrick-sdk-0.70.0.tgz#5ff21106271be7d287f5c4953a9ac5e3e0b7f3e2"
-  integrity sha512-PykLkbI+RNdrBOrCfr5tDYdQSzT+HuJf9D+eYFfSY6ZcCNKoXw8v+iHyTOBnWNh+X12fLfGutb6DL2neiCJNMg==
+primebrick-sdk@^0.72.0:
+  version "0.72.0"
+  resolved "https://registry.yarnpkg.com/primebrick-sdk/-/primebrick-sdk-0.72.0.tgz#92609f9d02ee9c55e0c63cc6a6dfeb7e51bbed51"
+  integrity sha512-+rabegVao6GRLqBWmsfVN7DrP2QO0nHpi41Y6HVVA0H5RuOaAOI77KaEc3lKhhqPZgHS51v5yllRyeMcq2Fnow==
   dependencies:
     "@nestjs/common" "7.4.4"
     "@nestjs/core" "7.4.4"

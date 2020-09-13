@@ -3,9 +3,25 @@ yes;it;Sì;false;
 no;it;No;false;
 ok;it;Ok;false;
 cancel;it;Annulla;false;
-login;it;Accesso;false;
-login-hint;it;Inserire le credenziali per accedere;false;
-username;it;Nome Utente;false;
-password;it;Password;false;
-login-failed;it;Credenziali non valide;false;
+login;it;Accesso;false;login
+login-hint;it;Inserire le credenziali per accedere;false;login
+username;it;Nome Utente;false;login
+password;it;Password;false;login
+login-failed;it;Credenziali non valide;false;login
 not-valid-input-field;it;Il campo ${name} non è valido:;true;
+new;it;Nuovo;false;
+delete;it;Elimina;false;
+archive;it;Archivia;false;
+refresh;it;Aggiorna;false;
+search;it;Cerca;false;
+key;it;Chiave;false;
+language-code;it;Codice Lingua;false;
+translation;it;Traduzione;false;
+group;it;Gruppo;false;
+template;it;Modello;false;
+translations;it;Traduzioni;false;
+menu-admin;it;Impostazioni;false;
+menu-admin-translations;it;Traduzioni;false;
+menu-admin-navigation;it;Navigazione;false;
+save;it;Salva;false;
+info;it;Informazioni;false;
