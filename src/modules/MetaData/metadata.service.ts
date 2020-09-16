@@ -8,9 +8,9 @@ import { MetaTranslation } from './entities/MetaTranslation.entity';
 
 @Injectable()
 export class MetadataService {
-    private readonly logger = new AdvancedLogger('MetadataService', true);
-
-    constructor(private readonly repositoryService: TenantRepositoryService) {}
+    constructor(private readonly repositoryService: TenantRepositoryService, private readonly logger: AdvancedLogger) {
+        logger.setContext("MetadataService")
+    }
 
     async getAllViews(tenantAlias: string): Promise<MetaView[]> {
         const metaViewRepository = await this.repositoryService.getTenantRepository(tenantAlias, MetaView);
@@ -26,7 +26,7 @@ export class MetadataService {
                 },
                 select: ['definition'],
             });
-            this.logger.debug('ciccio');
+            this.logger.debug('ciccio')
             return view.definition;
         } catch (ex) {
             //TODO: @michaelsogos -> send error to logging system
