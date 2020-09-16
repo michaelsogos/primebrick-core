@@ -106,12 +106,27 @@ export class AuthService {
     private async localAuthenticate(tenantAlias: string, credentials: { username: string; password: string }): Promise<User> {
         const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, Login);
 
-        //TODO: @mso -> Match hashed password, not plain text
-        const validLogin = await loginRepository.findOneOrFail(null, {
-            where: { username: credentials.username, password: credentials.password },
+        const userLogIn = await loginRepository.findOneOrFail(null, {
+            where: {username: credentials.username},
             relations: ['user'],
         });
-        return validLogin.user;
+
+        let splittedPwd = userLogIn.password.split("$");
+        let passwordIsValid = false;
+        if(splittedPwd.length > 1){
+            if(splittedPwd[1] == "shiro1"){
+                passwordIsValid = this.shiroAuth(
+                    splittedPwd[4],
+                    splittedPwd[5],
+                    Number(splittedPwd[3]),
+                    credentials.password)
+                }
+            }
+        
+        if(passwordIsValid)
+            return userLogIn.user;
+        else
+            throw new UnauthorizedException('Credentials are invalid!');
     }
 
     private async getUserProfile(tenantAlias: string, userCode: string): Promise<User> {
@@ -135,5 +150,36 @@ export class AuthService {
         userProfile.roles = user.roles.map(role => role.name);
 
         return userProfile;
+    }
+
+    private shiroAuth(
+        passwordSalt : string,
+        passwordHashed : string,
+        iterations : number,
+        password : string,
+    ) : boolean {
+        try {
+            var salt = Buffer.from(passwordSalt, "base64");
+
+            var crypto = require("crypto");
+            var hash = crypto
+                .createHash("sha512")
+                .update(salt)
+                .update(password);
+
+            var hashed = hash.digest();
+
+            for (var i = 0; i < iterations - 1; i++) {
+                hashed = crypto
+                    .createHash("sha512")
+                    .update(hashed)
+                    .digest();
+            }
+        } catch (ex) {
+            throw new UnauthorizedException('Credentials are invalid!');
+        }
+
+        if (hashed.toString("base64") == passwordHashed) return true;
+        else return false;
     }
 }
