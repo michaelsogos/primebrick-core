@@ -4,6 +4,7 @@ import { TenantRepositoryService, TenantManagerService, LocalAuthConfig, UserPro
 import { User } from './entities/User.entity';
 import { Login } from './entities/Login.entity';
 import { AuthTokenPayload } from './models/AuthTokenPayload';
+import {AuthManagerHelper} from 'primebrick-sdk';
 
 @Injectable()
 export class AuthService {
@@ -110,20 +111,8 @@ export class AuthService {
             where: {username: credentials.username},
             relations: ['user'],
         });
-
-        let splittedPwd = userLogIn.password.split("$");
-        let passwordIsValid = false;
-        if(splittedPwd.length > 1){
-            if(splittedPwd[1] == "shiro1"){
-                passwordIsValid = this.shiroAuth(
-                    splittedPwd[4],
-                    splittedPwd[5],
-                    Number(splittedPwd[3]),
-                    credentials.password)
-                }
-            }
         
-        if(passwordIsValid)
+        if(AuthManagerHelper.checkValidPassword(userLogIn.password, credentials.password))
             return userLogIn.user;
         else
             throw new UnauthorizedException('Credentials are invalid!');
@@ -152,34 +141,4 @@ export class AuthService {
         return userProfile;
     }
 
-    private shiroAuth(
-        passwordSalt : string,
-        passwordHashed : string,
-        iterations : number,
-        password : string,
-    ) : boolean {
-        try {
-            var salt = Buffer.from(passwordSalt, "base64");
-
-            var crypto = require("crypto");
-            var hash = crypto
-                .createHash("sha512")
-                .update(salt)
-                .update(password);
-
-            var hashed = hash.digest();
-
-            for (var i = 0; i < iterations - 1; i++) {
-                hashed = crypto
-                    .createHash("sha512")
-                    .update(hashed)
-                    .digest();
-            }
-        } catch (ex) {
-            throw new UnauthorizedException('Credentials are invalid!');
-        }
-
-        if (hashed.toString("base64") == passwordHashed) return true;
-        else return false;
-    }
 }
