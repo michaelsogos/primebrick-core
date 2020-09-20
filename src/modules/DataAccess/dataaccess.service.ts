@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TenantRepositoryService, ContextPayload } from 'primebrick-sdk';
+import { TenantRepositoryService, ContextPayload, AdvancedLogger } from 'primebrick-sdk';
 import {
     QueryPayload,
     QueryFilterOperator,
@@ -14,12 +14,15 @@ import { Brackets, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class DataAccessService {
-    constructor(private readonly repositoryService: TenantRepositoryService) {}
+    constructor(private readonly repositoryService: TenantRepositoryService, private readonly logger: AdvancedLogger) {
+        logger.setContext('DataAccessService');
+    }
 
     async find(context: ContextPayload, query: QueryPayload): Promise<QueryResult> {
         const queryBuilder = await this.getQueryBuilder(context, query);
 
         const result = await queryBuilder.getManyAndCount();
+        this.logger.debug(result[1].toString());
         return new QueryResult(result[0], result[1]);
     }
 
@@ -77,7 +80,7 @@ export class DataAccessService {
             for (const filter of query.filters) {
                 if (filter.leftOperator && filter.leftOperator == QueryFilterOperator.OR)
                     queryBuilder.orWhere(
-                        new Brackets(qb => {
+                        new Brackets((qb) => {
                             for (const condition of filter.expressions) {
                                 if (filter.expressionOperator && filter.expressionOperator == QueryFilterOperator.OR)
                                     qb.orWhere(condition.replace('$self', query.entity), filter.expressionValues || null);
@@ -87,7 +90,7 @@ export class DataAccessService {
                     );
                 else
                     queryBuilder.andWhere(
-                        new Brackets(qb => {
+                        new Brackets((qb) => {
                             for (const condition of filter.expressions) {
                                 if (filter.expressionOperator && filter.expressionOperator == QueryFilterOperator.OR)
                                     qb.orWhere(condition.replace('$self', query.entity), filter.expressionValues || null);
