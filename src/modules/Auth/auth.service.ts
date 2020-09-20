@@ -4,7 +4,7 @@ import { TenantRepositoryService, TenantManagerService, LocalAuthConfig, UserPro
 import { User } from './entities/User.entity';
 import { Login } from './entities/Login.entity';
 import { AuthTokenPayload } from './models/AuthTokenPayload';
-import {AuthManagerHelper} from 'primebrick-sdk';
+import { AuthManagerHelper } from 'primebrick-sdk';
 
 @Injectable()
 export class AuthService {
@@ -108,14 +108,16 @@ export class AuthService {
         const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, Login);
 
         const userLogIn = await loginRepository.findOneOrFail(null, {
-            where: {username: credentials.username},
+            where: { username: credentials.username },
             relations: ['user'],
         });
-        
-        if(AuthManagerHelper.checkValidPassword(userLogIn.password, credentials.password))
-            return userLogIn.user;
-        else
-            throw new UnauthorizedException('Credentials are invalid!');
+
+        const securePassword = AuthManagerHelper.secureStringReader(userLogIn.password);
+
+        const secureString = AuthManagerHelper.buildSecureString(credentials.password, securePassword.salt, securePassword.iterations);
+
+        if (secureString == userLogIn.password) return userLogIn.user;
+        else throw new UnauthorizedException('Credentials are invalid!');
     }
 
     private async getUserProfile(tenantAlias: string, userCode: string): Promise<User> {
@@ -136,9 +138,31 @@ export class AuthService {
         userProfile.firstName = user.firstName;
         userProfile.lastName = user.lastName;
         userProfile.languageCode = user.languageCode;
-        userProfile.roles = user.roles.map(role => role.name);
+        userProfile.roles = user.roles.map((role) => role.name);
 
         return userProfile;
     }
 
+//     async updateUserPassword(tenantAlias: string, newCredentials : {username : string, password : string }){
+//         const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, Login);
+
+//         const userLogIn = await loginRepository.findOneOrFail(null, {
+//             where: { username: newCredentials.username },
+//             relations: ['user'],
+//         });
+
+//         const crypto = require('crypto');
+        
+//         const salt = crypto.randomBytes(128).toString("base64");
+
+//         const iterations = 48000;
+
+//         const newPassword = AuthManagerHelper.buildSecureString(newCredentials.password, salt, iterations);
+        
+//         userLogIn.password = newPassword;
+
+//         loginRepository.save(userLogIn);
+
+        
+//     }
 }

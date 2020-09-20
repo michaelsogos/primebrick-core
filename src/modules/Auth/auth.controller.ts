@@ -2,6 +2,7 @@ import { Controller, Post, Body, Headers, UnauthorizedException } from '@nestjs/
 import { AuthService } from './auth.service';
 import { Tenant } from 'primebrick-sdk';
 import { AuthTokenPayload } from './models/AuthTokenPayload';
+import { TenantAlias } from 'primebrick-sdk/dist/modules/TenantManager/entities/TenantAlias.entity';
 
 @Controller('api/auth')
 export class AuthController {
@@ -21,4 +22,9 @@ export class AuthController {
 
     return await this.authService.refreshToken(tenantAlias, body.refresh_token, access_token);
   }
+
+/*   @Post('update-password')
+  async updatePassword(@Tenant() tenantAlias: string, @Body()  newCredentials : {username: string, password : string}){
+    return await this.authService.updateUserPassword(tenantAlias, newCredentials );
+  } */
 }
