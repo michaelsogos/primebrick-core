@@ -143,26 +143,26 @@ export class AuthService {
         return userProfile;
     }
 
-//     async updateUserPassword(tenantAlias: string, newCredentials : {username : string, password : string }){
-//         const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, Login);
+/*     async updateUserPassword(tenantAlias: string, newCredentials : {username : string, password : string }){
+        const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, Login);
 
-//         const userLogIn = await loginRepository.findOneOrFail(null, {
-//             where: { username: newCredentials.username },
-//             relations: ['user'],
-//         });
+        const userLogIn = await loginRepository.findOneOrFail(null, {
+            where: { username: newCredentials.username },
+            relations: ['user'],
+        });
 
-//         const crypto = require('crypto');
+        const crypto = require('crypto');
         
-//         const salt = crypto.randomBytes(128).toString("base64");
+        const salt = crypto.randomBytes(128).toString("base64");
 
-//         const iterations = 48000;
+        const iterations = 48000;
 
-//         const newPassword = AuthManagerHelper.buildSecureString(newCredentials.password, salt, iterations);
+        const newPassword = AuthManagerHelper.buildSecureString(newCredentials.password, salt, iterations);
         
-//         userLogIn.password = newPassword;
+        userLogIn.password = newPassword;
 
-//         loginRepository.save(userLogIn);
+        loginRepository.save(userLogIn);
 
         
-//     }
+    } */
 }
