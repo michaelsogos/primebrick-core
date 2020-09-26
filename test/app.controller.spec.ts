@@ -16,7 +16,7 @@ describe('AppController', () => {
 
     describe('root', () => {
         it('should return "Hello World!"', () => {
-            expect(appController.seedDatabase('local')).toBe('Hello World!');
+            expect(appController.seedDatabase()).toBe('Hello World!');
         });
     });
 });

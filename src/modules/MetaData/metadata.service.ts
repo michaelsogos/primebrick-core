@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { MetaView } from './entities/metaView.entity';
-import { TenantRepositoryService, ContextPayload, AdvancedLogger } from 'primebrick-sdk';
+import { TenantRepositoryService, AdvancedLogger, SessionManagerService } from 'primebrick-sdk';
 import { MetaMenuItem } from './entities/MetaMenuItem.entity';
 import { In, Brackets } from 'typeorm';
 import { Role } from '../Auth/entities/Role.entity';
@@ -8,25 +8,29 @@ import { MetaTranslation } from './entities/MetaTranslation.entity';
 
 @Injectable()
 export class MetadataService {
-    constructor(private readonly repositoryService: TenantRepositoryService, private readonly logger: AdvancedLogger) {
-        logger.setContext("MetadataService")
+    constructor(
+        private readonly repositoryService: TenantRepositoryService,
+        private readonly logger: AdvancedLogger,
+        private readonly sessionManagerService: SessionManagerService,
+    ) {
+        logger.setContext('MetadataService');
     }
 
-    async getAllViews(tenantAlias: string): Promise<MetaView[]> {
-        const metaViewRepository = await this.repositoryService.getTenantRepository(tenantAlias, MetaView);
+    async getAllViews(): Promise<MetaView[]> {
+        const metaViewRepository = await this.repositoryService.getTenantRepository(MetaView);
         return await metaViewRepository.find();
     }
 
-    async getView(context: ContextPayload, viewName: string): Promise<MetaView> {
+    async getView(viewName: string): Promise<MetaView> {
         try {
-            const metaViewRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaView);
+            const metaViewRepository = await this.repositoryService.getTenantRepository(MetaView);
             const view = await metaViewRepository.findOneOrFail({
                 where: {
                     name: viewName,
                 },
                 select: ['definition'],
             });
-            this.logger.debug('ciccio')
+            this.logger.debug('ciccio');
             return view.definition;
         } catch (ex) {
             //TODO: @michaelsogos -> send error to logging system
@@ -34,22 +38,23 @@ export class MetadataService {
         }
     }
 
-    async getAllMenuItems(context: ContextPayload): Promise<MetaMenuItem[]> {
-        const metaMenuRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaMenuItem);
+    async getAllMenuItems(): Promise<MetaMenuItem[]> {
+        const metaMenuRepository = await this.repositoryService.getTenantRepository(MetaMenuItem);
         const treeRepostory = metaMenuRepository.manager.getTreeRepository(MetaMenuItem);
         return await treeRepostory.findTrees();
     }
 
-    async getMenuItems(context: ContextPayload): Promise<MetaMenuItem[]> {
-        const roleRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, Role);
+    async getMenuItems(): Promise<MetaMenuItem[]> {
+        const roleRepository = await this.repositoryService.getTenantRepository(Role);
+        const sessionContext = this.sessionManagerService.getContext();
         const roles = await roleRepository.find({
             relations: ['menuItems'],
             where: {
-                name: In([...context.userProfile.roles]),
+                name: In([...sessionContext.userProfile.roles]),
             },
         });
 
-        const metaMenuRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaMenuItem);
+        const metaMenuRepository = await this.repositoryService.getTenantRepository(MetaMenuItem);
 
         const treeRepostory = metaMenuRepository.manager.getTreeRepository(MetaMenuItem);
 
@@ -63,9 +68,10 @@ export class MetadataService {
         return result;
     }
 
-    async getTranslations(group: string, context: ContextPayload): Promise<MetaTranslation[]> {
-        const translationRepository = await this.repositoryService.getTenantRepository(context.tenantAlias, MetaTranslation);
+    async getTranslations(group: string): Promise<MetaTranslation[]> {
+        const translationRepository = await this.repositoryService.getTenantRepository(MetaTranslation);
         const query = translationRepository.createQueryBuilder('t');
+        const sessionContext = this.sessionManagerService.getContext();
 
         if (group) query.where('t.group = :group', { group: group });
         else {
@@ -76,7 +82,7 @@ export class MetadataService {
                 }),
             );
         }
-        query.andWhere('t.languageCode = :languageCode', { languageCode: context.languageCode });
+        query.andWhere('t.languageCode = :languageCode', { languageCode: sessionContext.languageCode });
 
         query.select(['t.isTemplate', 't.key', 't.value']);
 

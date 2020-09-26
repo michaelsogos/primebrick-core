@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TenantRepositoryService, ContextPayload, AdvancedLogger } from 'primebrick-sdk';
+import { TenantRepositoryService, AdvancedLogger } from 'primebrick-sdk';
 import {
     QueryPayload,
     QueryFilterOperator,
@@ -18,23 +18,23 @@ export class DataAccessService {
         logger.setContext('DataAccessService');
     }
 
-    async find(context: ContextPayload, query: QueryPayload): Promise<QueryResult> {
-        const queryBuilder = await this.getQueryBuilder(context, query);
+    async find(query: QueryPayload): Promise<QueryResult> {
+        const queryBuilder = await this.getQueryBuilder(query);
 
         const result = await queryBuilder.getManyAndCount();
         this.logger.debug(result[1].toString());
         return new QueryResult(result[0], result[1]);
     }
 
-    async findOne(context: ContextPayload, query: QueryPayload): Promise<QueryResult> {
-        const queryBuilder = await this.getQueryBuilder(context, query);
+    async findOne(query: QueryPayload): Promise<QueryResult> {
+        const queryBuilder = await this.getQueryBuilder(query);
 
         const result = await queryBuilder.getOne();
         return new QueryResult([result], 1);
     }
 
-    private async getQueryBuilder(context: ContextPayload, query: QueryPayload): Promise<SelectQueryBuilder<unknown>> {
-        const dbconn = await this.repositoryService.getTenantConnection(context.tenantAlias);
+    private async getQueryBuilder(query: QueryPayload): Promise<SelectQueryBuilder<unknown>> {
+        const dbconn = await this.repositoryService.getTenantConnection();
         const queryBuilder = dbconn.createQueryBuilder(query.entity, query.entity);
 
         if (query.fields && query.fields.length > 0) {
@@ -118,14 +118,14 @@ export class DataAccessService {
         return queryBuilder;
     }
 
-    async save(context: ContextPayload, entityName: string, entity: unknown): Promise<QueryResult> {
-        const dbconn = await this.repositoryService.getTenantConnection(context.tenantAlias);
+    async save(entityName: string, entity: unknown): Promise<QueryResult> {
+        const dbconn = await this.repositoryService.getTenantConnection();
         const repository = dbconn.getRepository(entityName);
         const savedEntity = await repository.save(repository.create(entity));
         return new QueryResult([savedEntity], 1);
     }
 
-    async info(context: ContextPayload, query: QueryPayload): Promise<QueryResult> {
+    async info(query: QueryPayload): Promise<QueryResult> {
         query.fields = [];
         const versionField = new QueryField();
         versionField.expression = '$self.version';
@@ -197,7 +197,7 @@ export class DataAccessService {
         importerJoin.fields = [importerNameField];
         query.joins.push(importerJoin);
 
-        const queryBuilder = await this.getQueryBuilder(context, query);
+        const queryBuilder = await this.getQueryBuilder(query);
 
         const result = await queryBuilder.getRawOne();
         return new QueryResult([result], 1);

@@ -1,5 +1,5 @@
 import { Controller, UseGuards, Body, Post } from '@nestjs/common';
-import { AuthGuard, Context, ContextPayload } from 'primebrick-sdk';
+import { AuthGuard } from 'primebrick-sdk';
 import { DataAccessService } from './dataaccess.service';
 import { QueryPayload } from './models/QueryPayload';
 import { QueryResult } from './models/QueryResult';
@@ -11,22 +11,22 @@ export class DataAccessSecureController {
     constructor(private readonly dataAccessService: DataAccessService) {}
 
     @Post('find')
-    async find(@Context() context: ContextPayload, @Body() query: QueryPayload): Promise<QueryResult> {
-        return await this.dataAccessService.find(context, query);
+    async find(@Body() query: QueryPayload): Promise<QueryResult> {
+        return await this.dataAccessService.find(query);
     }
 
     @Post('findOne')
-    async findOne(@Context() context: ContextPayload, @Body() query: QueryPayload): Promise<QueryResult> {
-        return await this.dataAccessService.findOne(context, query);
+    async findOne(@Body() query: QueryPayload): Promise<QueryResult> {
+        return await this.dataAccessService.findOne(query);
     }
 
     @Post('save')
-    async save(@Context() context: ContextPayload, @Body() payload: SavePayload): Promise<QueryResult> {
-        return await this.dataAccessService.save(context, payload.entityName, payload.entity);
+    async save(@Body() payload: SavePayload): Promise<QueryResult> {
+        return await this.dataAccessService.save(payload.entityName, payload.entity);
     }
 
     @Post('info')
-    async info(@Context() context: ContextPayload, @Body() query: QueryPayload): Promise<QueryResult> {
-        return await this.dataAccessService.info(context, query);
+    async info(@Body() query: QueryPayload): Promise<QueryResult> {
+        return await this.dataAccessService.info(query);
     }
 }
