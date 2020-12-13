@@ -45,7 +45,7 @@ export class AppModule extends PrimeBrickModule implements NestModule {
     //TODO: @mso -> Remove extending PrimeBrickModule in order to not run SCHEMA UPDATE and DATA IMPORT, move everything in core-brick and commons-core
     constructor(readonly tenantManagerService: TenantManagerService, readonly logger: AdvancedLogger) {
         super(tenantManagerService, logger);
-        logger.setContext(global['appModuleName']);
+        logger.setContext(process.brickName);
     }
 
     configure(consumer: MiddlewareConsumer): any {
