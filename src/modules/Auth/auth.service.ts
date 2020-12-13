@@ -1,13 +1,17 @@
 import { Injectable, NotImplementedException, UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { TenantRepositoryService, TenantManagerService, LocalAuthConfig, UserProfile } from 'primebrick-sdk';
-import { User } from './entities/User.entity';
+import { TenantRepositoryService, TenantManagerService, LocalAuthConfig, UserProfile, AdvancedLogger } from 'primebrick-sdk';
 import { Login } from './entities/Login.entity';
 import { AuthTokenPayload } from './models/AuthTokenPayload';
+import { User } from 'primebrick-commons-core';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly repositoryService: TenantRepositoryService, private readonly tenantManagerService: TenantManagerService) {}
+    constructor(
+        private readonly repositoryService: TenantRepositoryService,
+        private readonly tenantManagerService: TenantManagerService,
+        private readonly logger: AdvancedLogger,
+    ) {}
 
     async login(credentials: { username: string; password: string }): Promise<AuthTokenPayload> {
         try {
@@ -49,6 +53,7 @@ export class AuthService {
 
             return payload;
         } catch (ex) {
+            this.logger.error(ex);
             throw new UnauthorizedException('Credentials are invalid!');
         }
     }

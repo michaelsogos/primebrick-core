@@ -6,6 +6,7 @@ import { AuthGuard } from 'primebrick-sdk';
 @Controller('api/management')
 @UseGuards(AuthGuard)
 export class AppSecureController {
+    //TODO: @mso -> Remove di controller in order to call core-brick service to run specific brick method (reponsability concern)
     constructor(private readonly appService: AppService) {}
 
     @Post('updatedb')

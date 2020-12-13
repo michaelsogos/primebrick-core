@@ -1,4 +1,12 @@
 {
+    "search.exclude": {
+        "**/dist": true,
+        "**/node_modules": true
+    },
+    "files.watcherExclude": {
+        "**/dist/**": true,
+        "**/node_modules/**": true
+    },
     "prettier.printWidth": 150,
     "prettier.singleQuote": true,
     "prettier.tabWidth": 4,
@@ -6,5 +14,20 @@
     "emmet.showExpandedAbbreviation": "inMarkupAndStylesheetFilesOnly",
     "eslint.alwaysShowStatus": true,
     "eslint.lintTask.enable": true,
-    "typescript.tsserver.experimental.enableProjectDiagnostics": true
+    "eslint.workingDirectories": ["./src"],
+    "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+    "json.schemas": [
+        {
+            "fileMatch": ["*-grid.json"],
+            "url": "/node_modules/primebrick-sdk/dist/schemas/grid-view-definition.schema.json"
+        },
+        {
+            "fileMatch": ["*-form.json"],
+            "url": "/node_modules/primebrick-sdk/dist/schemas/form-view-definition.schema.json"
+        },
+        {
+            "fileMatch": ["*data-init.json"],
+            "url": "/node_modules/primebrick-sdk/dist/schemas/data-init.schema.json"
+        }
+    ]
 }

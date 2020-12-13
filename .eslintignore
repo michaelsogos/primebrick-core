@@ -1,0 +1,5 @@
+ormconfig.js
+dist/*
+node_modules/*
+coverage/*
+junit/*

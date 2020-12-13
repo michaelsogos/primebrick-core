@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
-import { User } from './User.entity';
-import { AudibleEntity } from 'primebrick-sdk';
+import { AudibleEntity, RegisterEntity } from 'primebrick-sdk';
+import { User } from 'primebrick-commons-core';
 
+@RegisterEntity('core')
 @Entity()
 export class Login extends AudibleEntity {
     @Column({ unique: true })
@@ -11,7 +11,7 @@ export class Login extends AudibleEntity {
     @Column()
     password: string; //TODO: @mso-> save hashed password
 
-    @OneToOne((type) => User, (T) => T.login)
+    @OneToOne((type) => User)
     @JoinColumn()
     user: User;
 }

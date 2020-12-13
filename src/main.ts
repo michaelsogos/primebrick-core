@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { tenantExtractorMiddleware, GlobalExceptionsFilter, AdvancedLogger } from 'primebrick-sdk';
+import { tenantExtractorMiddleware, GlobalExceptionsFilter, AdvancedLogger, AppConfig } from 'primebrick-sdk';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from './config/primebrick.config';
+import * as timeout from 'connect-timeout';
 
 global['appModuleName'] = 'core';
 
@@ -17,6 +17,7 @@ async function bootstrap() {
 
     const configService = app.get(ConfigService);
     const appConfig = configService.get<AppConfig>('app');
+    app.use(timeout(appConfig.requestTimeout));
     await app.listen(appConfig.port);
 }
 
