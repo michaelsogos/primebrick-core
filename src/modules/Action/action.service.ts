@@ -5,9 +5,9 @@ import { MessagePayload, ProcessorManagerService } from 'primebrick-sdk';
 export class ActionService {
     constructor(private readonly processorService: ProcessorManagerService) {}
 
-    async sendMessage(action: string, payload: any): Promise<MessagePayload<any>> {
+    async sendMessage(action: string, payload: unknown): Promise<MessagePayload<any>> {
         try {
-            return await this.processorService.sendMessage<any, any>(action, payload);
+            return await this.processorService.sendMessage<unknown, unknown>(action, payload);
         } catch (ex) {
             new InternalServerErrorException(ex);
         }

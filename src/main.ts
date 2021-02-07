@@ -1,6 +1,5 @@
 import {} from 'primebrick-sdk/dist/environment';
-import { InitializeBrick } from 'primebrick-sdk';
-InitializeBrick('core');
+process.brickName = 'core';
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
