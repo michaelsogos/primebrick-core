@@ -1,10 +1,10 @@
 import { Injectable, NotImplementedException, UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { TenantRepositoryService, TenantManagerService, LocalAuthConfig, UserProfile } from 'primebrick-sdk';
-import { User } from './entities/User.entity';
+import { TenantRepositoryService, TenantManagerService, LocalAuthConfig, UserProfile, AdvancedLogger } from 'primebrick-sdk';
 import { Login } from './entities/Login.entity';
 import { AuthTokenPayload } from './models/AuthTokenPayload';
 import { AuthManagerHelper } from 'primebrick-sdk';
+import { User } from 'primebrick-commons-core';
 
 @Injectable()
 export class AuthService {
@@ -12,14 +12,14 @@ export class AuthService {
 
     async login(tenantAlias: string, credentials: { username: string; password: string }): Promise<AuthTokenPayload> {
         try {
-            const tenant = this.tenantService.getTenantConfig(tenantAlias);
+            const tenant = this.tenantManagerService.getTenantConfig();
             const authConfig: LocalAuthConfig = tenant.tenant_auth_config.auth_config;
 
             let user: User = null;
             switch (tenant.tenant_auth_config.auth_type) {
                 case 'local':
                     {
-                        user = await this.localAuthenticate(tenantAlias, credentials);
+                        user = await this.localAuthenticate(credentials);
                     }
                     break;
                 case 'oauth2':
@@ -50,12 +50,13 @@ export class AuthService {
 
             return payload;
         } catch (ex) {
+            this.logger.error(ex);
             throw new UnauthorizedException('Credentials are invalid!');
         }
     }
 
-    async refreshToken(tenantAlias: string, refreshToken: string, accessToken: string): Promise<AuthTokenPayload> {
-        const tenant = this.tenantService.getTenantConfig(tenantAlias);
+    async refreshToken(refreshToken: string, accessToken: string): Promise<AuthTokenPayload> {
+        const tenant = this.tenantManagerService.getTenantConfig();
         const authConfig: LocalAuthConfig = tenant.tenant_auth_config.auth_config;
 
         switch (tenant.tenant_auth_config.auth_type) {
@@ -71,7 +72,7 @@ export class AuthService {
                         ignoreExpiration: true,
                     }) as UserProfile;
 
-                    const userProfile = this.createUserProfileFromUser(await this.getUserProfile(tenantAlias, decodedAccessToken.code));
+                    const userProfile = this.createUserProfileFromUser(await this.getUserProfile(decodedAccessToken.code));
 
                     const access_token = jwt.sign(Object.assign({}, userProfile), authConfig.secretKey, {
                         audience: [`tenant:${tenant.code}`],
@@ -104,8 +105,8 @@ export class AuthService {
         }
     }
 
-    private async localAuthenticate(tenantAlias: string, credentials: { username: string; password: string }): Promise<User> {
-        const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, Login);
+    private async localAuthenticate(credentials: { username: string; password: string }): Promise<User> {
+        const loginRepository = await this.repositoryService.getTenantRepository(Login);
 
         const userLogIn = await loginRepository.findOneOrFail(null, {
             where: { username: credentials.username },
@@ -120,8 +121,8 @@ export class AuthService {
         else throw new UnauthorizedException('Credentials are invalid!');
     }
 
-    private async getUserProfile(tenantAlias: string, userCode: string): Promise<User> {
-        const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, User);
+    private async getUserProfile(userCode: string): Promise<User> {
+        const loginRepository = await this.repositoryService.getTenantRepository(User);
         const user = await loginRepository.findOneOrFail({
             where: {
                 code: userCode,
@@ -133,6 +134,7 @@ export class AuthService {
 
     private createUserProfileFromUser(user: User): UserProfile {
         const userProfile = new UserProfile();
+        userProfile.id = user.id;
         userProfile.code = user.code;
         userProfile.email = user.email;
         userProfile.firstName = user.firstName;

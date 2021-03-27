@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { ProcessorManagerService } from 'primebrick-sdk';
-import { Request } from 'express';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { MessagePayload, ProcessorManagerService } from 'primebrick-sdk';
 
 @Injectable()
 export class ActionService {
-  constructor(private readonly processorService: ProcessorManagerService) {}
+    constructor(private readonly processorService: ProcessorManagerService) {}
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async sendMessage(req: Request, action: string, payload: any) {
-    return await this.processorService.sendMessage(req, action, payload);
-  }
+    async sendMessage(action: string, payload: unknown): Promise<MessagePayload<any>> {
+        try {
+            return await this.processorService.sendMessage<unknown, unknown>(action, payload);
+        } catch (ex) {
+            new InternalServerErrorException(ex);
+        }
+    }
 }

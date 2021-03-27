@@ -6,13 +6,13 @@ import { TenantManagerService } from 'primebrick-sdk';
 export class AppService {
     constructor(private readonly tenantManagerService: TenantManagerService) {}
 
-    async updateDatabaseSchema(tenantAlias: string): Promise<Migration[]> {
-        const result = await this.tenantManagerService.updateTenantDatabaseSchema(tenantAlias);
+    async updateDatabaseSchema(): Promise<Migration[]> {
+        const result = await this.tenantManagerService.updateTenantDatabaseSchema();
         return result;
     }
 
-    async importDataInitData(tenantAlias: string): Promise<any[]> {
-        const result = await this.tenantManagerService.importTenantDatabaseData(tenantAlias);
+    async importDataInitData(): Promise<any[]> {
+        const result = await this.tenantManagerService.importTenantDatabaseData();
         return result;
     }
 }
