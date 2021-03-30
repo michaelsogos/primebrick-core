@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Headers, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthTokenPayload } from './models/AuthTokenPayload';
+import { TenantAlias } from 'primebrick-sdk/dist/modules/TenantManager/entities/TenantAlias.entity';
 
 @Controller('api/auth')
 export class AuthController {
@@ -18,6 +19,13 @@ export class AuthController {
         const access_token = accessToken.split(' ')[1];
         if (!access_token) throw new UnauthorizedException('Authorization bearer token malformed!');
 
-        return await this.authService.refreshToken(body.refresh_token, access_token);
-    }
+
+    return await this.authService.refreshToken(tenantAlias, body.refresh_token, access_token);
+  }
+
+/*   @Post('update-password')
+  async updatePassword(@Tenant() tenantAlias: string, @Body()  newCredentials : {username: string, password : string}){
+    return await this.authService.updateUserPassword(tenantAlias, newCredentials );
+  } */
+
 }

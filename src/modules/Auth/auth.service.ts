@@ -3,17 +3,14 @@ import * as jwt from 'jsonwebtoken';
 import { TenantRepositoryService, TenantManagerService, LocalAuthConfig, UserProfile, AdvancedLogger } from 'primebrick-sdk';
 import { Login } from './entities/Login.entity';
 import { AuthTokenPayload } from './models/AuthTokenPayload';
+import { AuthManagerHelper } from 'primebrick-sdk';
 import { User } from 'primebrick-commons-core';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private readonly repositoryService: TenantRepositoryService,
-        private readonly tenantManagerService: TenantManagerService,
-        private readonly logger: AdvancedLogger,
-    ) {}
+    constructor(private readonly repositoryService: TenantRepositoryService, private readonly tenantService: TenantManagerService) {}
 
-    async login(credentials: { username: string; password: string }): Promise<AuthTokenPayload> {
+    async login(tenantAlias: string, credentials: { username: string; password: string }): Promise<AuthTokenPayload> {
         try {
             const tenant = this.tenantManagerService.getTenantConfig();
             const authConfig: LocalAuthConfig = tenant.tenant_auth_config.auth_config;
@@ -111,12 +108,17 @@ export class AuthService {
     private async localAuthenticate(credentials: { username: string; password: string }): Promise<User> {
         const loginRepository = await this.repositoryService.getTenantRepository(Login);
 
-        //TODO: @mso -> Match hashed password, not plain text
-        const validLogin = await loginRepository.findOneOrFail(null, {
-            where: { username: credentials.username, password: credentials.password },
+        const userLogIn = await loginRepository.findOneOrFail(null, {
+            where: { username: credentials.username },
             relations: ['user'],
         });
-        return validLogin.user;
+
+        const securePassword = AuthManagerHelper.secureStringReader(userLogIn.password);
+
+        const secureString = AuthManagerHelper.buildSecureString(credentials.password, securePassword.salt, securePassword.iterations);
+
+        if (secureString == userLogIn.password) return userLogIn.user;
+        else throw new UnauthorizedException('Credentials are invalid!');
     }
 
     private async getUserProfile(userCode: string): Promise<User> {
@@ -142,4 +144,27 @@ export class AuthService {
 
         return userProfile;
     }
+
+/*     async updateUserPassword(tenantAlias: string, newCredentials : {username : string, password : string }){
+        const loginRepository = await this.repositoryService.getTenantRepository(tenantAlias, Login);
+
+        const userLogIn = await loginRepository.findOneOrFail(null, {
+            where: { username: newCredentials.username },
+            relations: ['user'],
+        });
+
+        const crypto = require('crypto');
+        
+        const salt = crypto.randomBytes(128).toString("base64");
+
+        const iterations = 48000;
+
+        const newPassword = AuthManagerHelper.buildSecureString(newCredentials.password, salt, iterations);
+        
+        userLogIn.password = newPassword;
+
+        loginRepository.save(userLogIn);
+
+        
+    } */
 }
