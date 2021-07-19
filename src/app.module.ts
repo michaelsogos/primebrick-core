@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppService } from './app.service';
 import { ActionModule } from './modules/Action/action.module';
 import {
@@ -18,9 +19,9 @@ import { DataAccessModule } from './modules/DataAccess/dataaccess.module';
 import { AppSecureController } from './app.secure.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppScheduler } from './app.scheduler';
-
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: ['.app.config.env', '.logger.config.env', '.db.config.env', '.primebrick.config.env', '.env'],

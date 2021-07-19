@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AdvancedLogger, TenantManagerModule } from 'primebrick-sdk';
+import { AdvancedLogger, ProcessorManagerModule, ProcessorManagerService, TenantManagerModule } from 'primebrick-sdk';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 
 @Module({
-    imports: [TenantManagerModule],
+    imports: [TenantManagerModule, ProcessorManagerModule],
     controllers: [AuthController],
-    providers: [AuthService, AdvancedLogger],
+    providers: [ProcessorManagerService, AdvancedLogger],
     exports: [],
 })
 export class AuthModule {}
