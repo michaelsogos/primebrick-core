@@ -1,0 +1,53 @@
+_id: req_49900152516646d483704d28ac616557
+type: Request
+parentId: fld_938b2e3e10a4405bb6ea1a5ddf095f55
+modified: 1626981459742
+created: 1607460543678
+url: localhost:3000/api/data/find
+name: DataAccess (core)
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"brick": "core",
+    	"entity": "MetaTranslation",
+    	"fields": [
+    		"key",
+    		"languageCode",
+    		"value",
+    		"group",
+    		"isTemplate"
+    	],
+    	"filters": [
+    		{
+    			"expressions": [
+    				"$self.languageCode = 'it'" ,"$self.group = 'login'"
+    			]
+    		}
+    	],
+    	"sorts": [
+    		{
+    			"field": "key"
+    		}
+    	],
+    	"take": 50,
+    	"skip": 0
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_1bea8345649d473da0049c8885948115
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiY29kZSI6IlVTUjAwMSIsImVtYWlsIjoibWlrZUBzZ3MuaXQiLCJmaXJzdE5hbWUiOiJNaWtlIiwibGFzdE5hbWUiOiJTb2dvcyIsImxhbmd1YWdlQ29kZSI6bnVsbCwicm9sZXMiOlsiQWRtaW5zIl0sImlhdCI6MTYyNjk4MTQwNCwiZXhwIjoxNjI2OTgyMzA0LCJhdWQiOlsidGVuYW50OnRlbmFudDEiXSwiaXNzIjoicHJpbWVicmljayJ9.KbEsyjUFM8RJ15gopKZTecvPUyBq42gO_DbW25ZtrQU
+metaSortKey: -1607459931743
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

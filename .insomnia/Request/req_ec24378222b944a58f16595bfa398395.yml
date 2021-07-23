@@ -1,0 +1,43 @@
+_id: req_ec24378222b944a58f16595bfa398395
+type: Request
+parentId: fld_938b2e3e10a4405bb6ea1a5ddf095f55
+modified: 1608327729925
+created: 1608326613185
+url: localhost:3000/api/data/find
+name: DataAccess (erpbase)
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"brick": "erp_base",
+    	"entity": "Company",
+    	"fields": [
+    		"code",
+    		"name"	
+    	],	
+    	"sorts": [
+    		{
+    			"field": "code"
+    		}
+    	],
+    	"take": 50,
+    	"skip": 0
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_1bea8345649d473da0049c8885948115
+authentication:
+  type: bearer
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiY29kZSI6IlVTUjAwMSIsImVtYWlsIjoibWlrZUBzZ3MuaXQiLCJmaXJzdE5hbWUiOiJNaWtlIiwibGFzdE5hbWUiOiJTb2dvcyIsImxhbmd1YWdlQ29kZSI6bnVsbCwicm9sZXMiOlsiQWRtaW5zIl0sImlhdCI6MTYwODMyNzE1NCwiZXhwIjoxNjA4MzI4MDU0LCJhdWQiOlsidGVuYW50OnRlbmFudDEiXSwiaXNzIjoicHJpbWVicmljayJ9.N4x11d3-Bhap2PkEomDQ403UMEIuWhhkHV74W4KwQX4
+metaSortKey: -1607459931718
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
