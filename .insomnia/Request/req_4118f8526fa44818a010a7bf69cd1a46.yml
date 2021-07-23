@@ -1,9 +1,9 @@
 _id: req_4118f8526fa44818a010a7bf69cd1a46
 type: Request
 parentId: fld_99a2e6d5e3ac418e9d9f0d93901a5e73
-modified: 1627067688906
+modified: 1627068103363
 created: 1627067211150
-url: localhost:3000/api/meta/translations?group=login&languageCode=en
+url: localhost:3000/api/meta/translations?group=login&languageCode=it
 name: Get Translations (no auth)
 description: ""
 method: GET
