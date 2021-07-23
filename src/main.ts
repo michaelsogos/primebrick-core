@@ -1,4 +1,4 @@
-process.brickName = 'core';
+process.brickName = 'api';
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';

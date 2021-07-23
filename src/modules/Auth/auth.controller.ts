@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Headers, UnauthorizedException } from '@nestjs/common';
-import { AuthTokenPayload, ProcessorManagerService } from 'primebrick-sdk';
+import { AuthTokenPayload, GlobalRpcAction, ProcessorManagerService } from 'primebrick-sdk';
 
 @Controller('api/auth')
 export class AuthController {
@@ -8,7 +8,7 @@ export class AuthController {
     @Post('login')
     async login(@Body() credentials: { username: string; password: string }): Promise<AuthTokenPayload> {
         const response = await this.processorManagerService.sendMessage<{ username: string; password: string }, AuthTokenPayload>(
-            'auth:login',
+            GlobalRpcAction.AUTH_LOGIN,
             credentials,
         );
 
@@ -25,7 +25,7 @@ export class AuthController {
         // return await this.authService.refreshToken(tenantAlias, body.refresh_token, access_token);
 
         const response = await this.processorManagerService.sendMessage<{ refresh_token: string; access_token: string }, AuthTokenPayload>(
-            'auth:refresh_token',
+            GlobalRpcAction.AUTH_REFRESH_TOKEN,
             { refresh_token: body.refresh_token, access_token },
         );
 

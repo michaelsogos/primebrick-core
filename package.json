@@ -2,12 +2,30 @@
     "name": "primebrick-core",
     "version": "0.1.0",
     "description": "Primebrick Core",
+    "main": "dist/main.js",
     "author": "Michael Sogos",
-    "private": true,
     "license": "MIT",
     "engines": {
         "node": ">=14.12.0"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/michaelsogos/primebrick-core.git"
+    },
+    "bugs": {
+        "url": "https://github.com/michaelsogos/primebrick-core/issues",
+        "email": "michael.sogos@gurustudioweb.it"
+    },
+    "homepage": "https://github.com/michaelsogos/primebrick-core#readme",
+    "files": [
+        "package.json",
+        "LICENSE",
+        "dist/**"
+    ],
+    "keywords": [
+        "primebrick",
+        "api"
+    ],
     "scripts": {
         "prebuild": "rimraf dist",
         "build": "nest build",
@@ -35,7 +53,7 @@
         "@nestjs/schedule": "1.0.0",
         "@nestjs/typeorm": "8.0.1",
         "pg": "8.6.0",
-        "primebrick-sdk": "0.143.0",
+        "primebrick-sdk": "0.146.0",
         "reflect-metadata": "0.1.13",
         "rimraf": "3.0.2",
         "rxjs": "7.2.0",

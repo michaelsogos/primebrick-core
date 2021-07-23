@@ -12,6 +12,7 @@ import {
     TypeOrmConfigService,
     loadConfig,
     TenantManagerService,
+    ProcessorManagerModule,
 } from 'primebrick-sdk';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/Auth/auth.module';
@@ -19,6 +20,8 @@ import { DataAccessModule } from './modules/DataAccess/dataaccess.module';
 import { AppSecureController } from './app.secure.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppScheduler } from './app.scheduler';
+import { AppController } from './app.controller';
+import { DataAccessService } from './modules/DataAccess/dataaccess.service';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
@@ -38,9 +41,10 @@ import { AppScheduler } from './app.scheduler';
         AuthModule,
         DataAccessModule,
         SessionManagerModule,
+        ProcessorManagerModule,
     ],
-    controllers: [AppSecureController],
-    providers: [ConfigService, AppService, AudibleEntitySubscriber, AppScheduler, AdvancedLogger],
+    controllers: [AppSecureController, AppController],
+    providers: [ConfigService, AppService, AudibleEntitySubscriber, AppScheduler, AdvancedLogger, DataAccessService],
 })
 export class AppModule extends PrimeBrickModule implements NestModule {
     //TODO: @mso -> Remove extending PrimeBrickModule in order to not run SCHEMA UPDATE and DATA IMPORT, move everything in core-brick and commons-core
