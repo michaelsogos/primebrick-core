@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Migration } from 'typeorm';
 import { AppManifest, AuthGuard, GlobalRpcAction, ProcessorManagerService } from 'primebrick-sdk';
@@ -28,6 +28,12 @@ export class AppSecureController {
     @Get('meta/menu')
     async getAppMenu(): Promise<any[]> {
         const response = await this.processorManagerService.sendMessage<null, any[]>(GlobalRpcAction.GET_SIDEMENU, null);
+        return response.data;
+    }
+
+    @Get('meta/view')
+    async getView(@Query('viewName') viewName: string): Promise<any[]> {
+        const response = await this.processorManagerService.sendMessage<string, any[]>(GlobalRpcAction.GET_VIEW, viewName);
         return response.data;
     }
 }
