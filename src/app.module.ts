@@ -46,10 +46,9 @@ import { DataAccessService } from './modules/DataAccess/dataaccess.service';
     controllers: [AppSecureController, AppController],
     providers: [ConfigService, AppService, AudibleEntitySubscriber, AppScheduler, AdvancedLogger, DataAccessService],
 })
-export class AppModule extends PrimeBrickModule implements NestModule {
-    //TODO: @mso -> Remove extending PrimeBrickModule in order to not run SCHEMA UPDATE and DATA IMPORT, move everything in core-brick and commons-core
+export class AppModule implements NestModule {
     constructor(readonly tenantManagerService: TenantManagerService, readonly logger: AdvancedLogger) {
-        super(tenantManagerService, logger);
+        this.tenantManagerService.loadAllTenantsInMemory(true);
         logger.setContext(process.brickName);
     }
 

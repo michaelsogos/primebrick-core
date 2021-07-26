@@ -7,6 +7,7 @@ import {
     ModuleRpcAction,
     ComposeModuleRpcAction,
     SavePayload,
+    DeletePayload,
 } from 'primebrick-sdk';
 
 @Injectable()
@@ -46,6 +47,19 @@ export class DataAccessService {
 
         const response = await this.processorManagerService.sendMessage<SavePayload, QueryResult>(
             ComposeModuleRpcAction(payload.brickName, ModuleRpcAction.DATA_SAVE),
+            payload,
+        );
+
+        return response.data;
+    }
+
+    async delete(payload: DeletePayload): Promise<QueryResult> {
+        if (!payload.brickName) throw new Error('Cannot delete entity with empty or invalid brick name!');
+        if (!payload.entityName) throw new Error('Cannot delete entity with empty or invalid entity name!');
+        if (!Number.isFinite(payload.entityId)) throw new Error('Cannot delete entity with empty or invalid entity id!');
+
+        const response = await this.processorManagerService.sendMessage<DeletePayload, QueryResult>(
+            ComposeModuleRpcAction(payload.brickName, ModuleRpcAction.DATA_DELETE),
             payload,
         );
 
