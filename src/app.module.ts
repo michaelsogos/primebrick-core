@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ActionModule } from './modules/Action/action.module';
 import {
     TenantManagerModule,
-    PrimeBrickModule,
     SessionManagerModule,
     SessionManagerMiddleware,
     AudibleEntitySubscriber,
