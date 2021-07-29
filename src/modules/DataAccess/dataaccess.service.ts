@@ -4,11 +4,12 @@ import {
     QueryPayload,
     QueryResult,
     ProcessorManagerService,
-    ModuleRpcAction,
+    DataRpcAction,
     ComposeModuleRpcAction,
     SavePayload,
     DeletePayload,
-    DeleteManyPayload,
+    DeleteOrArchiveManyPayload,
+    ArchivePayload,
 } from 'primebrick-sdk';
 
 @Injectable()
@@ -22,7 +23,7 @@ export class DataAccessService {
         if (!query.entity) throw new Error('Cannot execute query with empty or invalid entity name!');
 
         const response = await this.processorManagerService.sendMessage<QueryPayload, QueryResult>(
-            ComposeModuleRpcAction(query.brick, ModuleRpcAction.DATA_FIND_MANY),
+            ComposeModuleRpcAction(query.brick, DataRpcAction.DATA_FIND_MANY),
             query,
         );
 
@@ -34,7 +35,7 @@ export class DataAccessService {
         if (!query.entity) throw new Error('Cannot execute query with empty or invalid entity name!');
 
         const response = await this.processorManagerService.sendMessage<QueryPayload, QueryResult>(
-            ComposeModuleRpcAction(query.brick, ModuleRpcAction.DATA_FIND_ONE),
+            ComposeModuleRpcAction(query.brick, DataRpcAction.DATA_FIND_ONE),
             query,
         );
 
@@ -47,7 +48,7 @@ export class DataAccessService {
         if (!payload.entity) throw new Error('Cannot save entity with empty or invalid entity data model!');
 
         const response = await this.processorManagerService.sendMessage<SavePayload, QueryResult>(
-            ComposeModuleRpcAction(payload.brickName, ModuleRpcAction.DATA_SAVE),
+            ComposeModuleRpcAction(payload.brickName, DataRpcAction.DATA_SAVE),
             payload,
         );
 
@@ -60,20 +61,46 @@ export class DataAccessService {
         if (!Number.isFinite(payload.entityId)) throw new Error('Cannot delete entity with empty or invalid entity id!');
 
         const response = await this.processorManagerService.sendMessage<DeletePayload, QueryResult>(
-            ComposeModuleRpcAction(payload.brickName, ModuleRpcAction.DATA_DELETE),
+            ComposeModuleRpcAction(payload.brickName, DataRpcAction.DATA_DELETE),
             payload,
         );
 
         return response.data;
     }
 
-    async deleteMany(payload: DeleteManyPayload): Promise<QueryResult> {
+    async deleteMany(payload: DeleteOrArchiveManyPayload): Promise<QueryResult> {
         if (!payload.brickName) throw new Error('Cannot delete entities with empty or invalid brick name!');
         if (!payload.entityName) throw new Error('Cannot delete entities with empty or invalid entity name!');
         if (!payload.entityIds || payload.entityIds.length <= 0) throw new Error('Cannot delete entities with empty or invalid list of entity ids!');
 
-        const response = await this.processorManagerService.sendMessage<DeleteManyPayload, QueryResult>(
-            ComposeModuleRpcAction(payload.brickName, ModuleRpcAction.DATA_DELETE_MANY),
+        const response = await this.processorManagerService.sendMessage<DeleteOrArchiveManyPayload, QueryResult>(
+            ComposeModuleRpcAction(payload.brickName, DataRpcAction.DATA_DELETE_MANY),
+            payload,
+        );
+
+        return response.data;
+    }
+
+    async archive(payload: ArchivePayload): Promise<QueryResult> {
+        if (!payload.brickName) throw new Error('Cannot archive entity with empty or invalid brick name!');
+        if (!payload.entityName) throw new Error('Cannot archive entity with empty or invalid entity name!');
+        if (!Number.isFinite(payload.entityId)) throw new Error('Cannot archive entity with empty or invalid entity id!');
+
+        const response = await this.processorManagerService.sendMessage<ArchivePayload, QueryResult>(
+            ComposeModuleRpcAction(payload.brickName, DataRpcAction.DATA_ARCHIVE),
+            payload,
+        );
+
+        return response.data;
+    }
+
+    async archiveMany(payload: DeleteOrArchiveManyPayload): Promise<QueryResult> {
+        if (!payload.brickName) throw new Error('Cannot archive entities with empty or invalid brick name!');
+        if (!payload.entityName) throw new Error('Cannot archive entities with empty or invalid entity name!');
+        if (!payload.entityIds || payload.entityIds.length <= 0) throw new Error('Cannot archive entities with empty or invalid list of entity ids!');
+
+        const response = await this.processorManagerService.sendMessage<DeleteOrArchiveManyPayload, QueryResult>(
+            ComposeModuleRpcAction(payload.brickName, DataRpcAction.DATA_ARCHIVE_MANY),
             payload,
         );
 
@@ -85,7 +112,7 @@ export class DataAccessService {
         if (!query.entity) throw new Error('Cannot execute query with empty or invalid entity name!');
 
         const response = await this.processorManagerService.sendMessage<QueryPayload, QueryResult>(
-            ComposeModuleRpcAction(query.brick, ModuleRpcAction.DATA_INFO),
+            ComposeModuleRpcAction(query.brick, DataRpcAction.DATA_INFO),
             query,
         );
 

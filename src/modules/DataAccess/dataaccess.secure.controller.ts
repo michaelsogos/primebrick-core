@@ -1,5 +1,5 @@
 import { Controller, UseGuards, Body, Post } from '@nestjs/common';
-import { AuthGuard, DeleteManyPayload, DeletePayload, QueryPayload, QueryResult, SavePayload } from 'primebrick-sdk';
+import { ArchivePayload, AuthGuard, DeleteOrArchiveManyPayload, DeletePayload, QueryPayload, QueryResult, SavePayload } from 'primebrick-sdk';
 import { DataAccessService } from './dataaccess.service';
 
 @Controller('api/data')
@@ -28,8 +28,18 @@ export class DataAccessSecureController {
     }
 
     @Post('deleteMany')
-    async deleteMany(@Body() payload: DeleteManyPayload): Promise<QueryResult> {
+    async deleteMany(@Body() payload: DeleteOrArchiveManyPayload): Promise<QueryResult> {
         return await this.dataAccessService.deleteMany(payload);
+    }
+
+    @Post('archive')
+    async archive(@Body() payload: ArchivePayload): Promise<QueryResult> {
+        return await this.dataAccessService.archive(payload);
+    }
+
+    @Post('archiveMany')
+    async archiveMany(@Body() payload: DeleteOrArchiveManyPayload): Promise<QueryResult> {
+        return await this.dataAccessService.archiveMany(payload);
     }
 
     @Post('info')
