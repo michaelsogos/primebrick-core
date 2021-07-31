@@ -29,5 +29,6 @@
             "fileMatch": ["*data-init.json"],
             "url": "/node_modules/primebrick-sdk/dist/schemas/data-init.schema.json"
         }
-    ]
+    ],
+
 }

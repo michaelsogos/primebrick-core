@@ -5,8 +5,7 @@ import { AppManifest, AuthGuard, GlobalRpcAction, ProcessorManagerService } from
 
 @Controller('api')
 @UseGuards(AuthGuard)
-export class AppSecureController {
-    //TODO: @mso -> Remove di controller in order to call core-brick service to run specific brick method (reponsability concern)
+export class AppSecureController {    
     constructor(private readonly appService: AppService, private readonly processorManagerService: ProcessorManagerService) {}
 
     @Post('management/updatedb')
