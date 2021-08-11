@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
-import { AdvancedLogger, TenantManagerService } from 'primebrick-sdk';
+import { AdvancedLogger } from 'primebrick-sdk/core';
+import { TenantManagerService } from 'primebrick-sdk/modules';
 
 @Injectable()
 export class AppScheduler {

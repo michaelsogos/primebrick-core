@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { AdvancedLogger } from 'primebrick-sdk/core';
+import { ComposeModuleRpcAction, DataRpcAction } from 'primebrick-sdk/enums';
 import {
-    AdvancedLogger,
+    ArchiveOrRestorePayload,
+    DeleteOrArchiveOrRestoreManyPayload,
+    DeletePayload,
     QueryPayload,
     QueryResult,
-    ProcessorManagerService,
-    DataRpcAction,
-    ComposeModuleRpcAction,
     SavePayload,
-    DeletePayload,
-    DeleteOrArchiveOrRestoreManyPayload,
-    ArchiveOrRestorePayload,
-} from 'primebrick-sdk';
+} from 'primebrick-sdk/models';
+import { ProcessorManagerService } from 'primebrick-sdk/modules';
 
 @Injectable()
 export class DataAccessService {

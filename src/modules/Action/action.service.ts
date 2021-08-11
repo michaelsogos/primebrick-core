@@ -1,5 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { MessagePayload, ProcessorManagerService } from 'primebrick-sdk';
+import { MessagePayload } from 'primebrick-sdk/models';
+import { ProcessorManagerService } from 'primebrick-sdk/modules';
 
 @Injectable()
 export class ActionService {

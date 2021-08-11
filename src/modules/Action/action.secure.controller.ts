@@ -2,7 +2,7 @@ import { Controller, Post, Param, Req } from '@nestjs/common';
 import { ActionService } from './action.service';
 import { Request } from 'express';
 import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { AuthGuard } from 'primebrick-sdk';
+import { AuthGuard } from 'primebrick-sdk/nest';
 
 @Controller('api/action')
 @UseGuards(AuthGuard)

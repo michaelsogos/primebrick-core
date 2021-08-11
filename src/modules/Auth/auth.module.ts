@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AdvancedLogger, ProcessorManagerModule, ProcessorManagerService, TenantManagerModule } from 'primebrick-sdk';
+import { AdvancedLogger } from 'primebrick-sdk/core';
+import { ProcessorManagerModule, ProcessorManagerService, TenantManagerModule } from 'primebrick-sdk/modules';
 import { AuthController } from './auth.controller';
 
 @Module({

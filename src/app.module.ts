@@ -2,17 +2,6 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppService } from './app.service';
 import { ActionModule } from './modules/Action/action.module';
-import {
-    TenantManagerModule,
-    SessionManagerModule,
-    SessionManagerMiddleware,
-    AudibleEntitySubscriber,
-    AdvancedLogger,
-    TypeOrmConfigService,
-    loadConfig,
-    TenantManagerService,
-    ProcessorManagerModule,
-} from 'primebrick-sdk';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/Auth/auth.module';
 import { DataAccessModule } from './modules/DataAccess/dataaccess.module';
@@ -21,13 +10,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppScheduler } from './app.scheduler';
 import { AppController } from './app.controller';
 import { DataAccessService } from './modules/DataAccess/dataaccess.service';
+import { AdvancedLogger, ConfigLoader, TypeOrmConfigService } from 'primebrick-sdk/core';
+import { ProcessorManagerModule, SessionManagerModule, TenantManagerModule, TenantManagerService } from 'primebrick-sdk/modules';
+import { AudibleEntitySubscriber, SessionManagerMiddleware } from 'primebrick-sdk/nest';
 @Module({
     imports: [
         ScheduleModule.forRoot(),
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: ['.app.config.env', '.logger.config.env', '.db.config.env', '.primebrick.config.env', '.env'],
-            load: [loadConfig],
+            load: [ConfigLoader],
         }),
         TypeOrmModule.forRootAsync({
             name: 'primebrick_coordinator',

@@ -1,13 +1,13 @@
 import { Controller, UseGuards, Body, Post } from '@nestjs/common';
 import {
     ArchiveOrRestorePayload,
-    AuthGuard,
     DeleteOrArchiveOrRestoreManyPayload,
     DeletePayload,
     QueryPayload,
     QueryResult,
     SavePayload,
-} from 'primebrick-sdk';
+} from 'primebrick-sdk/models';
+import { AuthGuard } from 'primebrick-sdk/nest';
 import { DataAccessService } from './dataaccess.service';
 
 @Controller('api/data')

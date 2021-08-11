@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Migration } from 'typeorm';
-import { TenantManagerService } from 'primebrick-sdk';
+import { TenantManagerService } from 'primebrick-sdk/modules';
 
 @Injectable()
 export class AppService {

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AdvancedLogger, ProcessorManagerModule, SessionManagerModule, TenantManagerModule } from 'primebrick-sdk';
+import { AdvancedLogger } from 'primebrick-sdk/core';
+import { ProcessorManagerModule, SessionManagerModule } from 'primebrick-sdk/modules';
 import { AuthModule } from '../Auth/auth.module';
 import { DataAccessSecureController } from './dataaccess.secure.controller';
 import { DataAccessService } from './dataaccess.service';

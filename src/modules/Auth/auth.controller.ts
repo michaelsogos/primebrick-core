@@ -1,5 +1,7 @@
 import { Controller, Post, Body, Headers, UnauthorizedException } from '@nestjs/common';
-import { AuthTokenPayload, GlobalRpcAction, ProcessorManagerService } from 'primebrick-sdk';
+import { GlobalRpcAction } from 'primebrick-sdk/enums';
+import { AuthTokenPayload } from 'primebrick-sdk/models';
+import { ProcessorManagerService } from 'primebrick-sdk/modules';
 
 @Controller('api/auth')
 export class AuthController {

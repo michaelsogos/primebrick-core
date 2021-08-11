@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { GlobalRpcAction, ProcessorManagerService } from 'primebrick-sdk';
+import { GlobalRpcAction } from 'primebrick-sdk/enums';
+import { ProcessorManagerService } from 'primebrick-sdk/modules';
 
 @Controller('api')
 export class AppController {

@@ -1,11 +1,14 @@
 import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Migration } from 'typeorm';
-import { AppManifest, AuthGuard, GlobalRpcAction, ProcessorManagerService } from 'primebrick-sdk';
+import { AuthGuard } from 'primebrick-sdk/nest';
+import { ProcessorManagerService } from 'primebrick-sdk/modules';
+import { AppManifest } from 'primebrick-sdk/models';
+import { GlobalRpcAction } from 'primebrick-sdk/enums';
 
 @Controller('api')
 @UseGuards(AuthGuard)
-export class AppSecureController {    
+export class AppSecureController {
     constructor(private readonly appService: AppService, private readonly processorManagerService: ProcessorManagerService) {}
 
     @Post('management/updatedb')
