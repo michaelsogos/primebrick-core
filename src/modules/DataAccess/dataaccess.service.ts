@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { AdvancedLogger } from 'primebrick-sdk/core';
 import { ComposeModuleRpcAction, DataRpcAction } from 'primebrick-sdk/enums';
 import {
     ArchiveOrRestorePayload,
@@ -9,13 +8,11 @@ import {
     QueryResult,
     SavePayload,
 } from 'primebrick-sdk/models';
-import { ProcessorManagerService } from 'primebrick-sdk/modules';
+import { LogManagerService, ProcessorManagerService } from 'primebrick-sdk/modules';
 
 @Injectable()
 export class DataAccessService {
-    constructor(private readonly processorManagerService: ProcessorManagerService, private readonly logger: AdvancedLogger) {
-        logger.setContext('DataAccessService');
-    }
+    constructor(private readonly processorManagerService: ProcessorManagerService, private readonly logger: LogManagerService) {}
 
     async findMany(query: QueryPayload): Promise<QueryResult> {
         if (!query.brick) throw new Error('Cannot execute query with empty or invalid brick name!');

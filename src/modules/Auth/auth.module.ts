@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AdvancedLogger } from 'primebrick-sdk/core';
-import { ProcessorManagerModule, ProcessorManagerService, TenantManagerModule } from 'primebrick-sdk/modules';
+import { LogManagerService, ProcessorManagerModule, ProcessorManagerService, TenantManagerModule } from 'primebrick-sdk/modules';
 import { AuthController } from './auth.controller';
 
 @Module({
@@ -15,9 +14,10 @@ import { AuthController } from './auth.controller';
                 options: { url: process.env.NATS_URL || 'nats://localhost:4222' },
             },
         ]),
+        LogManagerService,
     ],
     controllers: [AuthController],
-    providers: [ProcessorManagerService, AdvancedLogger],
+    providers: [ProcessorManagerService],
     exports: [],
 })
 export class AuthModule {}

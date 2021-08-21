@@ -10,8 +10,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppScheduler } from './app.scheduler';
 import { AppController } from './app.controller';
 import { DataAccessService } from './modules/DataAccess/dataaccess.service';
-import { AdvancedLogger, ConfigLoader, TypeOrmConfigService } from 'primebrick-sdk/core';
-import { ProcessorManagerModule, SessionManagerModule, TenantManagerModule, TenantManagerService } from 'primebrick-sdk/modules';
+import { ConfigLoader, TypeOrmConfigService } from 'primebrick-sdk/core';
+import {
+    LogManagerModule,
+    LogManagerService,
+    ProcessorManagerModule,
+    SessionManagerModule,
+    TenantManagerModule,
+    TenantManagerService,
+} from 'primebrick-sdk/modules';
 import { AudibleEntitySubscriber, SessionManagerMiddleware } from 'primebrick-sdk/nest';
 @Module({
     imports: [
@@ -33,14 +40,14 @@ import { AudibleEntitySubscriber, SessionManagerMiddleware } from 'primebrick-sd
         DataAccessModule,
         SessionManagerModule,
         ProcessorManagerModule,
+        LogManagerModule,
     ],
     controllers: [AppSecureController, AppController],
-    providers: [ConfigService, AppService, AudibleEntitySubscriber, AppScheduler, AdvancedLogger, DataAccessService],
+    providers: [ConfigService, AppService, AudibleEntitySubscriber, AppScheduler, DataAccessService],
 })
 export class AppModule implements NestModule {
-    constructor(readonly tenantManagerService: TenantManagerService, readonly logger: AdvancedLogger) {
+    constructor(readonly tenantManagerService: TenantManagerService, readonly logger: LogManagerService) {
         this.tenantManagerService.loadAllTenantsInMemory(true);
-        logger.setContext(process.brickName);
     }
 
     configure(consumer: MiddlewareConsumer): any {
